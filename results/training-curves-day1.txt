@@ -1,0 +1,119 @@
+== train-full
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 8241 top-1 agreement 4.6% trunk-prob 0.046 | all positions 5.0% 0.050
+eval step 25: generated positions n 8241 top-1 agreement 20.4% trunk-prob 0.195 | all positions 30.0% 0.272
+eval step 50: generated positions n 8241 top-1 agreement 30.5% trunk-prob 0.294 | all positions 43.5% 0.401
+eval step 75: generated positions n 8241 top-1 agreement 37.5% trunk-prob 0.362 | all positions 49.4% 0.455
+eval step 100: generated positions n 8241 top-1 agreement 45.5% trunk-prob 0.434 | all positions 55.5% 0.509
+eval step 125: generated positions n 8241 top-1 agreement 49.8% trunk-prob 0.472 | all positions 58.4% 0.535
+eval step 150: generated positions n 8241 top-1 agreement 53.7% trunk-prob 0.509 | all positions 61.0% 0.559
+eval step 175: generated positions n 8241 top-1 agreement 56.1% trunk-prob 0.531 | all positions 63.1% 0.577
+eval step 200: generated positions n 8241 top-1 agreement 58.5% trunk-prob 0.554 | all positions 65.3% 0.595
+eval step 225: generated positions n 8241 top-1 agreement 59.3% trunk-prob 0.560 | all positions 66.1% 0.601
+eval step 250: generated positions n 8241 top-1 agreement 59.9% trunk-prob 0.566 | all positions 66.6% 0.606
+done. best held-out agreement 59.9%
+== train-input
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+trainable parameters: 52.4M
+eval step 0: generated positions n 8241 top-1 agreement 4.6% trunk-prob 0.046 | all positions 5.0% 0.050
+eval step 25: generated positions n 8241 top-1 agreement 16.5% trunk-prob 0.160 | all positions 24.8% 0.227
+eval step 50: generated positions n 8241 top-1 agreement 26.5% trunk-prob 0.256 | all positions 36.8% 0.337
+eval step 75: generated positions n 8241 top-1 agreement 34.8% trunk-prob 0.334 | all positions 44.8% 0.412
+eval step 100: generated positions n 8241 top-1 agreement 41.5% trunk-prob 0.398 | all positions 50.9% 0.468
+eval step 125: generated positions n 8241 top-1 agreement 44.0% trunk-prob 0.422 | all positions 53.1% 0.490
+eval step 150: generated positions n 8241 top-1 agreement 48.1% trunk-prob 0.458 | all positions 56.8% 0.521
+eval step 175: generated positions n 8241 top-1 agreement 50.6% trunk-prob 0.481 | all positions 58.8% 0.539
+eval step 200: generated positions n 8241 top-1 agreement 51.9% trunk-prob 0.494 | all positions 59.9% 0.549
+eval step 225: generated positions n 8241 top-1 agreement 52.9% trunk-prob 0.504 | all positions 60.6% 0.556
+eval step 250: generated positions n 8241 top-1 agreement 53.2% trunk-prob 0.506 | all positions 60.8% 0.558
+done. best held-out agreement 53.2%
+== h2h-ttf-r1024
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+ternary head: float init agreement 54.2%, 542M trits (main 425M + adapters rank 1024/256), about 103 MiB at 1.6 bpw
+trainable parameters: 544.5M
+eval step 0: generated positions n 8241 top-1 agreement 15.7% trunk-prob 0.150 | all positions 16.4% 0.158
+eval step 25: generated positions n 8241 top-1 agreement 33.2% trunk-prob 0.318 | all positions 45.8% 0.420
+eval step 50: generated positions n 8241 top-1 agreement 36.8% trunk-prob 0.349 | all positions 48.1% 0.440
+eval step 75: generated positions n 8241 top-1 agreement 41.5% trunk-prob 0.394 | all positions 52.2% 0.477
+eval step 100: generated positions n 8241 top-1 agreement 43.1% trunk-prob 0.410 | all positions 53.0% 0.487
+eval step 125: generated positions n 8241 top-1 agreement 46.9% trunk-prob 0.448 | all positions 56.0% 0.515
+eval step 150: generated positions n 8241 top-1 agreement 50.0% trunk-prob 0.472 | all positions 59.1% 0.540
+eval step 175: generated positions n 8241 top-1 agreement 51.6% trunk-prob 0.488 | all positions 58.1% 0.534
+eval step 200: generated positions n 8241 top-1 agreement 54.2% trunk-prob 0.512 | all positions 62.1% 0.566
+eval step 225: generated positions n 8241 top-1 agreement 55.1% trunk-prob 0.519 | all positions 62.9% 0.573
+eval step 250: generated positions n 8241 top-1 agreement 56.3% trunk-prob 0.530 | all positions 63.9% 0.581
+eval step 275: generated positions n 8241 top-1 agreement 56.9% trunk-prob 0.535 | all positions 64.4% 0.585
+eval step 300: generated positions n 8241 top-1 agreement 57.1% trunk-prob 0.536 | all positions 64.6% 0.585
+done. best held-out agreement 57.1%
+== h2h-float
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 8241 top-1 agreement 54.2% trunk-prob 0.508 | all positions 61.7% 0.560
+eval step 25: generated positions n 8241 top-1 agreement 49.7% trunk-prob 0.468 | all positions 58.3% 0.532
+eval step 50: generated positions n 8241 top-1 agreement 47.7% trunk-prob 0.450 | all positions 55.9% 0.511
+eval step 75: generated positions n 8241 top-1 agreement 52.2% trunk-prob 0.492 | all positions 60.2% 0.550
+eval step 100: generated positions n 8241 top-1 agreement 53.7% trunk-prob 0.507 | all positions 61.6% 0.562
+eval step 125: generated positions n 8241 top-1 agreement 55.4% trunk-prob 0.520 | all positions 62.1% 0.567
+eval step 150: generated positions n 8241 top-1 agreement 56.9% trunk-prob 0.535 | all positions 63.5% 0.577
+eval step 175: generated positions n 8241 top-1 agreement 58.6% trunk-prob 0.550 | all positions 65.1% 0.590
+eval step 200: generated positions n 8241 top-1 agreement 59.6% trunk-prob 0.560 | all positions 66.2% 0.599
+eval step 225: generated positions n 8241 top-1 agreement 61.0% trunk-prob 0.570 | all positions 67.0% 0.607
+eval step 250: generated positions n 8241 top-1 agreement 61.4% trunk-prob 0.575 | all positions 67.7% 0.612
+eval step 275: generated positions n 8241 top-1 agreement 62.2% trunk-prob 0.580 | all positions 68.3% 0.616
+eval step 300: generated positions n 8241 top-1 agreement 61.9% trunk-prob 0.579 | all positions 68.1% 0.615
+done. best held-out agreement 62.2%
+== var-r4096
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+ternary head: float init agreement 54.2%, 894M trits (main 425M + adapters rank 4096/1024), about 171 MiB at 1.6 bpw
+trainable parameters: 896.9M
+eval step 0: generated positions n 8241 top-1 agreement 42.3% trunk-prob 0.400 | all positions 48.6% 0.449
+eval step 25: generated positions n 8241 top-1 agreement 35.1% trunk-prob 0.334 | all positions 46.6% 0.426
+eval step 50: generated positions n 8241 top-1 agreement 34.0% trunk-prob 0.326 | all positions 46.5% 0.427
+eval step 75: generated positions n 8241 top-1 agreement 40.5% trunk-prob 0.385 | all positions 48.5% 0.448
+eval step 100: generated positions n 8241 top-1 agreement 42.8% trunk-prob 0.409 | all positions 52.4% 0.482
+eval step 125: generated positions n 8241 top-1 agreement 50.7% trunk-prob 0.479 | all positions 58.3% 0.534
+eval step 150: generated positions n 8241 top-1 agreement 51.8% trunk-prob 0.488 | all positions 60.1% 0.548
+eval step 175: generated positions n 8241 top-1 agreement 54.7% trunk-prob 0.515 | all positions 61.9% 0.566
+eval step 200: generated positions n 8241 top-1 agreement 57.6% trunk-prob 0.540 | all positions 64.3% 0.584
+eval step 225: generated positions n 8241 top-1 agreement 58.2% trunk-prob 0.546 | all positions 64.6% 0.587
+eval step 250: generated positions n 8241 top-1 agreement 60.7% trunk-prob 0.568 | all positions 66.7% 0.605
+eval step 275: generated positions n 8241 top-1 agreement 61.3% trunk-prob 0.572 | all positions 67.5% 0.609
+eval step 300: generated positions n 8241 top-1 agreement 61.3% trunk-prob 0.572 | all positions 67.1% 0.607
+done. best held-out agreement 61.3%
+== var-wide2
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+ternary head: float init agreement 54.2%, 863M trits (main 692M + adapters rank 1024/256), about 165 MiB at 1.6 bpw
+trainable parameters: 866.3M
+eval step 0: generated positions n 8241 top-1 agreement 14.9% trunk-prob 0.143 | all positions 16.6% 0.159
+eval step 25: generated positions n 8241 top-1 agreement 33.8% trunk-prob 0.322 | all positions 45.1% 0.415
+eval step 50: generated positions n 8241 top-1 agreement 36.1% trunk-prob 0.346 | all positions 47.2% 0.434
+eval step 75: generated positions n 8241 top-1 agreement 40.3% trunk-prob 0.386 | all positions 51.2% 0.471
+eval step 100: generated positions n 8241 top-1 agreement 43.3% trunk-prob 0.412 | all positions 53.4% 0.489
+eval step 125: generated positions n 8241 top-1 agreement 48.1% trunk-prob 0.458 | all positions 57.4% 0.526
+eval step 150: generated positions n 8241 top-1 agreement 49.4% trunk-prob 0.467 | all positions 58.1% 0.531
+eval step 175: generated positions n 8241 top-1 agreement 50.8% trunk-prob 0.482 | all positions 59.8% 0.546
+eval step 200: generated positions n 8241 top-1 agreement 54.3% trunk-prob 0.513 | all positions 62.5% 0.569
+eval step 225: generated positions n 8241 top-1 agreement 55.7% trunk-prob 0.525 | all positions 63.3% 0.576
+eval step 250: generated positions n 8241 top-1 agreement 56.5% trunk-prob 0.532 | all positions 64.1% 0.582
+eval step 275: generated positions n 8241 top-1 agreement 57.8% trunk-prob 0.544 | all positions 65.2% 0.590
+eval step 300: generated positions n 8241 top-1 agreement 57.8% trunk-prob 0.544 | all positions 65.1% 0.590
+done. best held-out agreement 57.8%
+== var-deep2
+sequences: train 543 (616265 positions, 335481 generated), held-out 19 (8 conversations)
+ternary head: float init agreement 54.2%, 1016M trits (main 797M + adapters rank 1024/256), about 194 MiB at 1.6 bpw
+trainable parameters: 1020.5M
+eval step 0: generated positions n 8241 top-1 agreement 15.7% trunk-prob 0.150 | all positions 16.4% 0.158
+eval step 25: generated positions n 8241 top-1 agreement 33.8% trunk-prob 0.323 | all positions 43.9% 0.407
+eval step 50: generated positions n 8241 top-1 agreement 36.8% trunk-prob 0.350 | all positions 48.6% 0.445
+eval step 75: generated positions n 8241 top-1 agreement 41.7% trunk-prob 0.396 | all positions 52.4% 0.480
+eval step 100: generated positions n 8241 top-1 agreement 44.4% trunk-prob 0.424 | all positions 54.6% 0.501
+eval step 125: generated positions n 8241 top-1 agreement 47.7% trunk-prob 0.452 | all positions 52.7% 0.490
+eval step 150: generated positions n 8241 top-1 agreement 50.4% trunk-prob 0.478 | all positions 59.3% 0.542
+eval step 175: generated positions n 8241 top-1 agreement 51.4% trunk-prob 0.485 | all positions 59.8% 0.545
+eval step 200: generated positions n 8241 top-1 agreement 53.5% trunk-prob 0.505 | all positions 61.8% 0.563
+eval step 225: generated positions n 8241 top-1 agreement 55.1% trunk-prob 0.519 | all positions 62.8% 0.571
+eval step 250: generated positions n 8241 top-1 agreement 56.0% trunk-prob 0.528 | all positions 63.6% 0.578
+eval step 275: generated positions n 8241 top-1 agreement 56.8% trunk-prob 0.535 | all positions 64.4% 0.585
+eval step 300: generated positions n 8241 top-1 agreement 57.2% trunk-prob 0.538 | all positions 64.7% 0.587
+done. best held-out agreement 57.2%

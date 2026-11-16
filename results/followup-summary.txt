@@ -1,0 +1,33 @@
+== follow-up summary 2026-11-16 21:35:23
+
+-- confidence threshold sweep (ternary rank-4096 stage-2 head; reference without threshold: n2 42.0, n3 37.8, n1 43.9 tok/s)
+pmin-n2-p0.3 TOTAL: 38.5 tok/s over 3674 tokens, drafts accepted 1959/2982 (65.7%)
+pmin-n2-p0.5 TOTAL: 34.5 tok/s over 3730 tokens, drafts accepted 1791/2402 (74.6%)
+pmin-n2-p0.7 TOTAL: 30.4 tok/s over 3683 tokens, drafts accepted 1600/1851 (86.4%)
+pmin-n2-p0.9 TOTAL: 30.1 tok/s over 3736 tokens, drafts accepted 1334/1395 (95.6%)
+pmin-n3-p0.3 TOTAL: 34.5 tok/s over 3685 tokens, drafts accepted 2062/3839 (53.7%)
+pmin-n3-p0.5 TOTAL: 32.8 tok/s over 3656 tokens, drafts accepted 1849/2666 (69.4%)
+pmin-n3-p0.7 TOTAL: 32.2 tok/s over 3780 tokens, drafts accepted 1724/2091 (82.4%)
+pmin-n3-p0.9 TOTAL: 30.5 tok/s over 3798 tokens, drafts accepted 1359/1435 (94.7%)
+
+-- history-only training (generated weight 0, history weight 1), scored on generated positions; reference 0/0.2/1.0 history with generated on: 64.9 / 65.6 / 65.9
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 600: generated positions n 75953 top-1 agreement 59.0% trunk-prob 0.546 | all positions 62.8% 0.532
+
+-- longer stage 2
+float-s2long:
+eval step 0: generated positions n 75953 top-1 agreement 70.2% trunk-prob 0.641 | all positions 69.4% 0.586 | draft 2: 52.4% | draft 3: 43.2%
+eval step 1200: generated positions n 75953 top-1 agreement 71.3% trunk-prob 0.650 | all positions 70.4% 0.593 | draft 2: 56.6% | draft 3: 48.5%
+done. best held-out score 58.8%
+ttf4096-s2long:
+eval step 0: generated positions n 75953 top-1 agreement 68.0% trunk-prob 0.623 | all positions 67.1% 0.570 | draft 2: 49.1% | draft 3: 39.7%
+eval step 1200: generated positions n 75953 top-1 agreement 69.8% trunk-prob 0.639 | all positions 68.7% 0.583 | draft 2: 54.6% | draft 3: 46.8%
+done. best held-out score 57.1%
+
+-- engine, 12 prompts (plain 35.3 tok/s)
+float-s2long-n1 TOTAL: 43.0 tok/s over 3708 tokens, drafts accepted 1592/2103 (75.7%)
+float-s2long-n2 TOTAL: 41.8 tok/s over 3730 tokens, drafts accepted 2019/3392 (59.5%)
+float-s2long-n3 TOTAL: 38.9 tok/s over 3750 tokens, drafts accepted 2181/4655 (46.9%)
+ttf4096-s2long-n1 TOTAL: 44.7 tok/s over 3708 tokens, drafts accepted 1592/2105 (75.6%)
+ttf4096-s2long-n2 TOTAL: 44.2 tok/s over 3730 tokens, drafts accepted 2019/3388 (59.6%)
+ttf4096-s2long-n3 TOTAL: 39.8 tok/s over 3750 tokens, drafts accepted 2149/4745 (45.3%)

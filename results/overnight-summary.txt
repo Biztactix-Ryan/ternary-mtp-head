@@ -1,0 +1,69 @@
+== overnight summary 2026-11-16 18:28:00
+
+-- held-out results (last eval line of each run)
+on-float-s1: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+   last:  500: generated positions n 75953 top-1 agreement 70.3% trunk-prob 0.642 | all positions 69.5% 0.587
+   done. best held-out score 70.3% 
+on-ttf4096-s1: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 40.0% trunk-prob 0.376 | all positions 40.8% 0.357
+   last:  500: generated positions n 75953 top-1 agreement 68.4% trunk-prob 0.626 | all positions 67.5% 0.573
+   ternary head: float init agreement 49.6%, 894M trits (main 425M + adapters rank 4096/1024), about 171 MiB at 1.6 bpw done. best held-out score 68.4% 
+on-ttf8192-s1: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 42.1% trunk-prob 0.394 | all positions 43.0% 0.375
+   last:  000: generated positions n 75953 top-1 agreement 65.5% trunk-prob 0.601 | all positions 64.8% 0.552
+   ternary head: float init agreement 49.6%, 1364M trits (main 425M + adapters rank 8192/2048), about 260 MiB at 1.6 bpw done. best held-out score 65.5% 
+on-hist-w0: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+   last:  00: generated positions n 75953 top-1 agreement 64.9% trunk-prob 0.596 | all positions 59.4% 0.521
+   done. best held-out score 64.9% 
+on-hist-w0.2: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+   last:  00: generated positions n 75953 top-1 agreement 65.6% trunk-prob 0.603 | all positions 65.4% 0.556
+   done. best held-out score 65.6% 
+on-hist-w1: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+   last:  00: generated positions n 75953 top-1 agreement 65.9% trunk-prob 0.604 | all positions 66.4% 0.563
+   done. best held-out score 65.9% 
+on-float-s2: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 70.3% trunk-prob 0.642 | all positions 69.5% 0.587 | draft 2: 24.9% | draft 3: 12.8%
+   last:  00: generated positions n 75953 top-1 agreement 70.2% trunk-prob 0.641 | all positions 69.4% 0.586 | draft 2: 52.4% | draft 3: 43.2%
+   done. best held-out score 55.2% 
+on-ttf4096-s2: sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+   first: : generated positions n 75953 top-1 agreement 68.4% trunk-prob 0.626 | all positions 67.4% 0.573 | draft 2: 26.1% | draft 3: 13.8%
+   last:  00: generated positions n 75953 top-1 agreement 68.0% trunk-prob 0.623 | all positions 67.1% 0.570 | draft 2: 49.1% | draft 3: 39.7%
+   ternary head: float init agreement 49.6%, 894M trits (main 425M + adapters rank 4096/1024), about 171 MiB at 1.6 bpw done. best held-out score 52.3% 
+
+-- context-length check (head trained on short contexts, scored per source)
+dahoas     seqs    25 avg context    971  generated n    18062  agreement 47.4%  trunk-prob 0.431
+fitness    seqs     4 avg context    762  generated n     2824  agreement 43.9%  trunk-prob 0.390
+grade      seqs     1 avg context    552  generated n      157  agreement 48.4%  trunk-prob 0.458
+kimi       seqs   117 avg context   1018  generated n    63134  agreement 49.4%  trunk-prob 0.465
+leet       seqs    32 avg context    910  generated n    21182  agreement 54.1%  trunk-prob 0.498
+mcq        seqs    16 avg context    395  generated n     5128  agreement 38.8%  trunk-prob 0.342
+pe         seqs    32 avg context   1022  generated n    25653  agreement 50.6%  trunk-prob 0.468
+sess       seqs   116 avg context   5208  generated n    25154  agreement 50.5%  trunk-prob 0.462
+
+-- engine, 12 prompts
+plain TOTAL: 35.3 tok/s over 3716 tokens, drafts accepted n/a
+float-s1-n1 TOTAL: 44.0 tok/s over 3708 tokens, drafts accepted 1590/2107 (75.5%)
+float-s1-n2 TOTAL: 36.9 tok/s over 3730 tokens, drafts accepted 1793/3845 (46.6%)
+float-s1-n3 TOTAL: 31.9 tok/s over 3750 tokens, drafts accepted 1831/5701 (32.1%)
+float-s2-n1 TOTAL: 43.7 tok/s over 3708 tokens, drafts accepted 1582/2114 (74.8%)
+float-s2-n2 TOTAL: 42.3 tok/s over 3730 tokens, drafts accepted 1998/3434 (58.2%)
+float-s2-n3 TOTAL: 37.6 tok/s over 3750 tokens, drafts accepted 2128/4812 (44.2%)
+ttf4096-s1-n1 TOTAL: 44.2 tok/s over 3708 tokens, drafts accepted 1564/2132 (73.4%)
+ttf4096-s1-n2 TOTAL: 38.5 tok/s over 3730 tokens, drafts accepted 1794/3837 (46.8%)
+ttf4096-s1-n3 TOTAL: 32.4 tok/s over 3750 tokens, drafts accepted 1825/5708 (32.0%)
+ttf4096-s2-n1 TOTAL: 43.9 tok/s over 3708 tokens, drafts accepted 1564/2132 (73.4%)
+ttf4096-s2-n2 TOTAL: 42.0 tok/s over 3730 tokens, drafts accepted 1972/3483 (56.6%)
+ttf4096-s2-n3 TOTAL: 37.8 tok/s over 3750 tokens, drafts accepted 2098/4898 (42.8%)
+ttf8192-s1-n1 TOTAL: 42.8 tok/s over 3708 tokens, drafts accepted 1537/2160 (71.2%)
+ttf8192-s1-n2 TOTAL: 36.9 tok/s over 3730 tokens, drafts accepted 1748/3931 (44.5%)
+ttf8192-s1-n3 TOTAL: 31.5 tok/s over 3750 tokens, drafts accepted 1795/5806 (30.9%)
+
+8635 MiB  out/on-float-s1.gguf
+8635 MiB  out/on-float-s2.gguf
+8006 MiB  out/on-ttf4096-s1.gguf
+8006 MiB  out/on-ttf4096-s2.gguf
+8099 MiB  out/on-ttf8192-s1.gguf

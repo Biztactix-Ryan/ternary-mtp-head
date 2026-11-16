@@ -1,0 +1,318 @@
+== on-float-s1
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 52.4% trunk-prob 0.487 | all positions 52.3% 0.455
+eval step 200: generated positions n 75953 top-1 agreement 55.9% trunk-prob 0.520 | all positions 56.6% 0.489
+eval step 300: generated positions n 75953 top-1 agreement 57.8% trunk-prob 0.536 | all positions 57.6% 0.498
+eval step 400: generated positions n 75953 top-1 agreement 60.7% trunk-prob 0.560 | all positions 59.7% 0.516
+eval step 500: generated positions n 75953 top-1 agreement 61.7% trunk-prob 0.570 | all positions 60.8% 0.526
+eval step 600: generated positions n 75953 top-1 agreement 63.4% trunk-prob 0.585 | all positions 62.9% 0.542
+eval step 700: generated positions n 75953 top-1 agreement 65.1% trunk-prob 0.599 | all positions 64.0% 0.551
+eval step 800: generated positions n 75953 top-1 agreement 66.4% trunk-prob 0.610 | all positions 65.0% 0.559
+eval step 900: generated positions n 75953 top-1 agreement 67.6% trunk-prob 0.619 | all positions 66.5% 0.567
+eval step 1000: generated positions n 75953 top-1 agreement 68.1% trunk-prob 0.624 | all positions 67.4% 0.573
+eval step 1100: generated positions n 75953 top-1 agreement 69.0% trunk-prob 0.632 | all positions 67.3% 0.576
+eval step 1200: generated positions n 75953 top-1 agreement 69.6% trunk-prob 0.636 | all positions 68.8% 0.582
+eval step 1300: generated positions n 75953 top-1 agreement 70.0% trunk-prob 0.639 | all positions 69.1% 0.584
+eval step 1400: generated positions n 75953 top-1 agreement 70.3% trunk-prob 0.641 | all positions 69.4% 0.586
+eval step 1500: generated positions n 75953 top-1 agreement 70.3% trunk-prob 0.642 | all positions 69.5% 0.587
+done. best held-out score 70.3%
+== on-ttf4096-s1
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+ternary head: float init agreement 49.6%, 894M trits (main 425M + adapters rank 4096/1024), about 171 MiB at 1.6 bpw
+trainable parameters: 896.9M
+eval step 0: generated positions n 75953 top-1 agreement 40.0% trunk-prob 0.376 | all positions 40.8% 0.357
+eval step 100: generated positions n 75953 top-1 agreement 42.0% trunk-prob 0.394 | all positions 41.7% 0.374
+eval step 200: generated positions n 75953 top-1 agreement 46.3% trunk-prob 0.431 | all positions 44.6% 0.401
+eval step 300: generated positions n 75953 top-1 agreement 50.5% trunk-prob 0.471 | all positions 46.3% 0.417
+eval step 400: generated positions n 75953 top-1 agreement 54.5% trunk-prob 0.507 | all positions 54.5% 0.476
+eval step 500: generated positions n 75953 top-1 agreement 56.9% trunk-prob 0.528 | all positions 56.1% 0.491
+eval step 600: generated positions n 75953 top-1 agreement 57.9% trunk-prob 0.537 | all positions 58.2% 0.502
+eval step 700: generated positions n 75953 top-1 agreement 60.6% trunk-prob 0.560 | all positions 59.9% 0.518
+eval step 800: generated positions n 75953 top-1 agreement 62.8% trunk-prob 0.579 | all positions 62.1% 0.533
+eval step 900: generated positions n 75953 top-1 agreement 64.0% trunk-prob 0.589 | all positions 63.4% 0.543
+eval step 1000: generated positions n 75953 top-1 agreement 65.0% trunk-prob 0.598 | all positions 64.2% 0.550
+eval step 1100: generated positions n 75953 top-1 agreement 65.9% trunk-prob 0.606 | all positions 64.7% 0.555
+eval step 1200: generated positions n 75953 top-1 agreement 67.2% trunk-prob 0.616 | all positions 66.3% 0.565
+eval step 1300: generated positions n 75953 top-1 agreement 67.6% trunk-prob 0.619 | all positions 66.6% 0.567
+eval step 1400: generated positions n 75953 top-1 agreement 68.2% trunk-prob 0.624 | all positions 67.3% 0.571
+eval step 1500: generated positions n 75953 top-1 agreement 68.4% trunk-prob 0.626 | all positions 67.5% 0.573
+done. best held-out score 68.4%
+== on-ttf8192-s1
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+ternary head: float init agreement 49.6%, 1364M trits (main 425M + adapters rank 8192/2048), about 260 MiB at 1.6 bpw
+trainable parameters: 1366.7M
+eval step 0: generated positions n 75953 top-1 agreement 42.1% trunk-prob 0.394 | all positions 43.0% 0.375
+eval step 100: generated positions n 75953 top-1 agreement 32.0% trunk-prob 0.302 | all positions 32.8% 0.298
+eval step 200: generated positions n 75953 top-1 agreement 44.4% trunk-prob 0.415 | all positions 44.5% 0.398
+eval step 300: generated positions n 75953 top-1 agreement 50.4% trunk-prob 0.469 | all positions 46.5% 0.420
+eval step 400: generated positions n 75953 top-1 agreement 54.0% trunk-prob 0.502 | all positions 55.0% 0.474
+eval step 500: generated positions n 75953 top-1 agreement 56.8% trunk-prob 0.527 | all positions 56.1% 0.489
+eval step 600: generated positions n 75953 top-1 agreement 59.7% trunk-prob 0.551 | all positions 58.7% 0.509
+eval step 700: generated positions n 75953 top-1 agreement 62.5% trunk-prob 0.576 | all positions 61.8% 0.531
+eval step 800: generated positions n 75953 top-1 agreement 64.1% trunk-prob 0.590 | all positions 63.1% 0.541
+eval step 900: generated positions n 75953 top-1 agreement 65.2% trunk-prob 0.598 | all positions 64.3% 0.549
+eval step 1000: generated positions n 75953 top-1 agreement 65.5% trunk-prob 0.601 | all positions 64.8% 0.552
+done. best held-out score 65.5%
+== on-hist-w0
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 50.8% trunk-prob 0.473 | all positions 45.8% 0.414
+eval step 200: generated positions n 75953 top-1 agreement 54.7% trunk-prob 0.508 | all positions 50.2% 0.450
+eval step 300: generated positions n 75953 top-1 agreement 58.4% trunk-prob 0.541 | all positions 52.9% 0.470
+eval step 400: generated positions n 75953 top-1 agreement 62.0% trunk-prob 0.572 | all positions 57.0% 0.502
+eval step 500: generated positions n 75953 top-1 agreement 64.0% trunk-prob 0.588 | all positions 58.9% 0.516
+eval step 600: generated positions n 75953 top-1 agreement 64.9% trunk-prob 0.596 | all positions 59.4% 0.521
+done. best held-out score 64.9%
+== on-hist-w0.2
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 52.5% trunk-prob 0.488 | all positions 52.4% 0.456
+eval step 200: generated positions n 75953 top-1 agreement 56.8% trunk-prob 0.528 | all positions 57.2% 0.495
+eval step 300: generated positions n 75953 top-1 agreement 59.4% trunk-prob 0.550 | all positions 58.7% 0.510
+eval step 400: generated positions n 75953 top-1 agreement 63.3% trunk-prob 0.583 | all positions 62.8% 0.539
+eval step 500: generated positions n 75953 top-1 agreement 64.8% trunk-prob 0.596 | all positions 64.4% 0.550
+eval step 600: generated positions n 75953 top-1 agreement 65.6% trunk-prob 0.603 | all positions 65.4% 0.556
+done. best held-out score 65.6%
+== on-hist-w1
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 53.0% trunk-prob 0.494 | all positions 51.6% 0.456
+eval step 200: generated positions n 75953 top-1 agreement 57.1% trunk-prob 0.529 | all positions 57.4% 0.497
+eval step 300: generated positions n 75953 top-1 agreement 60.3% trunk-prob 0.557 | all positions 61.3% 0.524
+eval step 400: generated positions n 75953 top-1 agreement 63.6% trunk-prob 0.585 | all positions 63.9% 0.546
+eval step 500: generated positions n 75953 top-1 agreement 65.1% trunk-prob 0.598 | all positions 65.4% 0.557
+eval step 600: generated positions n 75953 top-1 agreement 65.9% trunk-prob 0.604 | all positions 66.4% 0.563
+done. best held-out score 65.9%
+== on-float-s2
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+trainable parameters: 424.7M
+eval step 0: generated positions n 75953 top-1 agreement 70.3% trunk-prob 0.642 | all positions 69.5% 0.587 | draft 2: 24.9% | draft 3: 12.8%
+eval step 100: generated positions n 75953 top-1 agreement 68.8% trunk-prob 0.630 | all positions 67.8% 0.577 | draft 2: 46.5% | draft 3: 35.5%
+eval step 200: generated positions n 75953 top-1 agreement 69.1% trunk-prob 0.632 | all positions 68.2% 0.578 | draft 2: 49.1% | draft 3: 39.7%
+eval step 300: generated positions n 75953 top-1 agreement 69.9% trunk-prob 0.638 | all positions 69.0% 0.584 | draft 2: 51.6% | draft 3: 42.2%
+eval step 400: generated positions n 75953 top-1 agreement 70.2% trunk-prob 0.641 | all positions 69.4% 0.586 | draft 2: 52.4% | draft 3: 43.2%
+done. best held-out score 55.2%
+== on-ttf4096-s2
+sequences: train 6174 (6460061 positions, 3155508 generated), held-out 150 (97 conversations)
+ternary head: float init agreement 49.6%, 894M trits (main 425M + adapters rank 4096/1024), about 171 MiB at 1.6 bpw
+trainable parameters: 896.9M
+eval step 0: generated positions n 75953 top-1 agreement 68.4% trunk-prob 0.626 | all positions 67.4% 0.573 | draft 2: 26.1% | draft 3: 13.8%
+eval step 100: generated positions n 75953 top-1 agreement 65.5% trunk-prob 0.603 | all positions 64.3% 0.553 | draft 2: 40.2% | draft 3: 29.1%
+eval step 200: generated positions n 75953 top-1 agreement 66.0% trunk-prob 0.607 | all positions 65.1% 0.557 | draft 2: 44.0% | draft 3: 33.9%
+eval step 300: generated positions n 75953 top-1 agreement 67.5% trunk-prob 0.619 | all positions 66.5% 0.567 | draft 2: 47.6% | draft 3: 37.8%
+eval step 400: generated positions n 75953 top-1 agreement 68.0% trunk-prob 0.623 | all positions 67.1% 0.570 | draft 2: 49.1% | draft 3: 39.7%
+done. best held-out score 52.3%
+== engine
+plain p01:  35.0 tok/s  accepted n/a
+plain p02:  35.3 tok/s  accepted n/a
+plain p03:  35.1 tok/s  accepted n/a
+plain p04:  35.3 tok/s  accepted n/a
+plain p05:  35.1 tok/s  accepted n/a
+plain p06:  35.2 tok/s  accepted n/a
+plain p07:  35.3 tok/s  accepted n/a
+plain p08:  35.2 tok/s  accepted n/a
+plain p09:  35.0 tok/s  accepted n/a
+plain p10:  35.1 tok/s  accepted n/a
+plain p11:  35.0 tok/s  accepted n/a
+plain p12:  35.2 tok/s  accepted n/a
+plain TOTAL: 35.3 tok/s over 3716 tokens, drafts accepted n/a
+float-s1-n1 p01:  45.7 tok/s  accepted 158/191
+float-s1-n1 p02:  40.6 tok/s  accepted 90/148
+float-s1-n1 p03:  47.0 tok/s  accepted 152/175
+float-s1-n1 p04:  46.7 tok/s  accepted 161/188
+float-s1-n1 p05:  44.5 tok/s  accepted 153/196
+float-s1-n1 p06:  40.1 tok/s  accepted 131/218
+float-s1-n1 p07:  44.2 tok/s  accepted 89/114
+float-s1-n1 p08:  40.9 tok/s  accepted 118/183
+float-s1-n1 p09:  48.6 tok/s  accepted 170/178
+float-s1-n1 p10:  42.6 tok/s  accepted 78/109
+float-s1-n1 p11:  44.4 tok/s  accepted 153/196
+float-s1-n1 p12:  41.2 tok/s  accepted 137/211
+float-s1-n1 TOTAL: 44.0 tok/s over 3708 tokens, drafts accepted 1590/2107 (75.5%)
+float-s1-n2 p01:  39.9 tok/s  accepted 185/327
+float-s1-n2 p02:  31.9 tok/s  accepted 94/278
+float-s1-n2 p03:  39.6 tok/s  accepted 172/324
+float-s1-n2 p04:  39.9 tok/s  accepted 182/333
+float-s1-n2 p05:  36.3 tok/s  accepted 165/368
+float-s1-n2 p06:  32.9 tok/s  accepted 147/403
+float-s1-n2 p07:  37.6 tok/s  accepted 100/206
+float-s1-n2 p08:  32.7 tok/s  accepted 134/372
+float-s1-n2 p09:  43.1 tok/s  accepted 195/307
+float-s1-n2 p10:  36.3 tok/s  accepted 88/196
+float-s1-n2 p11:  37.4 tok/s  accepted 172/353
+float-s1-n2 p12:  35.2 tok/s  accepted 159/378
+float-s1-n2 TOTAL: 36.9 tok/s over 3730 tokens, drafts accepted 1793/3845 (46.6%)
+float-s1-n3 p01:  35.6 tok/s  accepted 191/472
+float-s1-n3 p02:  27.7 tok/s  accepted 98/420
+float-s1-n3 p03:  35.0 tok/s  accepted 176/450
+float-s1-n3 p04:  34.5 tok/s  accepted 185/489
+float-s1-n3 p05:  29.8 tok/s  accepted 159/569
+float-s1-n3 p06:  28.6 tok/s  accepted 151/588
+float-s1-n3 p07:  32.6 tok/s  accepted 102/303
+float-s1-n3 p08:  28.1 tok/s  accepted 134/555
+float-s1-n3 p09:  37.0 tok/s  accepted 197/454
+float-s1-n3 p10:  30.0 tok/s  accepted 96/339
+float-s1-n3 p11:  32.2 tok/s  accepted 174/523
+float-s1-n3 p12:  31.3 tok/s  accepted 168/539
+float-s1-n3 TOTAL: 31.9 tok/s over 3750 tokens, drafts accepted 1831/5701 (32.1%)
+float-s2-n1 p01:  45.6 tok/s  accepted 159/190
+float-s2-n1 p02:  39.8 tok/s  accepted 87/151
+float-s2-n1 p03:  46.8 tok/s  accepted 152/175
+float-s2-n1 p04:  46.4 tok/s  accepted 162/187
+float-s2-n1 p05:  43.3 tok/s  accepted 148/200
+float-s2-n1 p06:  39.1 tok/s  accepted 125/224
+float-s2-n1 p07:  45.7 tok/s  accepted 93/111
+float-s2-n1 p08:  39.4 tok/s  accepted 112/189
+float-s2-n1 p09:  48.7 tok/s  accepted 171/177
+float-s2-n1 p10:  41.5 tok/s  accepted 74/112
+float-s2-n1 p11:  45.0 tok/s  accepted 156/193
+float-s2-n1 p12:  42.3 tok/s  accepted 143/205
+float-s2-n1 TOTAL: 43.7 tok/s over 3708 tokens, drafts accepted 1582/2114 (74.8%)
+float-s2-n2 p01:  45.6 tok/s  accepted 201/295
+float-s2-n2 p02:  35.5 tok/s  accepted 105/258
+float-s2-n2 p03:  45.4 tok/s  accepted 190/288
+float-s2-n2 p04:  46.5 tok/s  accepted 202/293
+float-s2-n2 p05:  41.6 tok/s  accepted 185/327
+float-s2-n2 p06:  35.8 tok/s  accepted 158/382
+float-s2-n2 p07:  45.2 tok/s  accepted 116/174
+float-s2-n2 p08:  35.7 tok/s  accepted 146/348
+float-s2-n2 p09:  54.3 tok/s  accepted 224/248
+float-s2-n2 p10:  39.7 tok/s  accepted 95/182
+float-s2-n2 p11:  44.4 tok/s  accepted 196/304
+float-s2-n2 p12:  40.5 tok/s  accepted 180/335
+float-s2-n2 TOTAL: 42.3 tok/s over 3730 tokens, drafts accepted 1998/3434 (58.2%)
+float-s2-n3 p01:  40.9 tok/s  accepted 213/406
+float-s2-n3 p02:  31.8 tok/s  accepted 117/363
+float-s2-n3 p03:  43.3 tok/s  accepted 204/366
+float-s2-n3 p04:  40.4 tok/s  accepted 210/414
+float-s2-n3 p05:  33.3 tok/s  accepted 179/509
+float-s2-n3 p06:  31.0 tok/s  accepted 166/544
+float-s2-n3 p07:  40.3 tok/s  accepted 122/243
+float-s2-n3 p08:  31.5 tok/s  accepted 155/492
+float-s2-n3 p09:  52.7 tok/s  accepted 243/315
+float-s2-n3 p10:  34.2 tok/s  accepted 110/297
+float-s2-n3 p11:  41.2 tok/s  accepted 212/411
+float-s2-n3 p12:  37.3 tok/s  accepted 197/452
+float-s2-n3 TOTAL: 37.6 tok/s over 3750 tokens, drafts accepted 2128/4812 (44.2%)
+ttf4096-s1-n1 p01:  45.8 tok/s  accepted 154/195
+ttf4096-s1-n1 p02:  41.7 tok/s  accepted 89/149
+ttf4096-s1-n1 p03:  47.0 tok/s  accepted 148/179
+ttf4096-s1-n1 p04:  46.9 tok/s  accepted 159/189
+ttf4096-s1-n1 p05:  44.7 tok/s  accepted 148/201
+ttf4096-s1-n1 p06:  39.9 tok/s  accepted 127/222
+ttf4096-s1-n1 p07:  44.7 tok/s  accepted 90/114
+ttf4096-s1-n1 p08:  41.0 tok/s  accepted 114/186
+ttf4096-s1-n1 p09:  48.2 tok/s  accepted 168/180
+ttf4096-s1-n1 p10:  42.2 tok/s  accepted 76/111
+ttf4096-s1-n1 p11:  44.5 tok/s  accepted 152/197
+ttf4096-s1-n1 p12:  41.7 tok/s  accepted 139/209
+ttf4096-s1-n1 TOTAL: 44.2 tok/s over 3708 tokens, drafts accepted 1564/2132 (73.4%)
+ttf4096-s1-n2 p01:  40.8 tok/s  accepted 179/337
+ttf4096-s1-n2 p02:  34.7 tok/s  accepted 100/268
+ttf4096-s1-n2 p03:  41.5 tok/s  accepted 173/322
+ttf4096-s1-n2 p04:  41.0 tok/s  accepted 181/333
+ttf4096-s1-n2 p05:  37.4 tok/s  accepted 164/368
+ttf4096-s1-n2 p06:  34.6 tok/s  accepted 147/403
+ttf4096-s1-n2 p07:  40.9 tok/s  accepted 105/196
+ttf4096-s1-n2 p08:  33.5 tok/s  accepted 130/380
+ttf4096-s1-n2 p09:  44.8 tok/s  accepted 196/305
+ttf4096-s1-n2 p10:  36.1 tok/s  accepted 83/206
+ttf4096-s1-n2 p11:  39.8 tok/s  accepted 175/346
+ttf4096-s1-n2 p12:  36.8 tok/s  accepted 161/373
+ttf4096-s1-n2 TOTAL: 38.5 tok/s over 3730 tokens, drafts accepted 1794/3837 (46.8%)
+ttf4096-s1-n3 p01:  34.1 tok/s  accepted 181/499
+ttf4096-s1-n3 p02:  30.1 tok/s  accepted 107/393
+ttf4096-s1-n3 p03:  34.9 tok/s  accepted 171/465
+ttf4096-s1-n3 p04:  36.6 tok/s  accepted 191/468
+ttf4096-s1-n3 p05:  29.4 tok/s  accepted 153/583
+ttf4096-s1-n3 p06:  28.4 tok/s  accepted 146/603
+ttf4096-s1-n3 p07:  35.1 tok/s  accepted 108/285
+ttf4096-s1-n3 p08:  27.8 tok/s  accepted 129/570
+ttf4096-s1-n3 p09:  38.0 tok/s  accepted 198/451
+ttf4096-s1-n3 p10:  29.6 tok/s  accepted 92/351
+ttf4096-s1-n3 p11:  34.0 tok/s  accepted 180/504
+ttf4096-s1-n3 p12:  32.0 tok/s  accepted 169/536
+ttf4096-s1-n3 TOTAL: 32.4 tok/s over 3750 tokens, drafts accepted 1825/5708 (32.0%)
+ttf4096-s2-n1 p01:  44.9 tok/s  accepted 154/195
+ttf4096-s2-n1 p02:  40.4 tok/s  accepted 88/151
+ttf4096-s2-n1 p03:  46.3 tok/s  accepted 149/178
+ttf4096-s2-n1 p04:  47.1 tok/s  accepted 161/188
+ttf4096-s2-n1 p05:  44.0 tok/s  accepted 149/199
+ttf4096-s2-n1 p06:  38.9 tok/s  accepted 122/226
+ttf4096-s2-n1 p07:  46.1 tok/s  accepted 91/112
+ttf4096-s2-n1 p08:  40.6 tok/s  accepted 114/187
+ttf4096-s2-n1 p09:  48.4 tok/s  accepted 167/181
+ttf4096-s2-n1 p10:  42.4 tok/s  accepted 76/111
+ttf4096-s2-n1 p11:  44.9 tok/s  accepted 152/197
+ttf4096-s2-n1 p12:  42.1 tok/s  accepted 141/207
+ttf4096-s2-n1 TOTAL: 43.9 tok/s over 3708 tokens, drafts accepted 1564/2132 (73.4%)
+ttf4096-s2-n2 p01:  43.8 tok/s  accepted 194/308
+ttf4096-s2-n2 p02:  34.7 tok/s  accepted 100/266
+ttf4096-s2-n2 p03:  45.2 tok/s  accepted 189/290
+ttf4096-s2-n2 p04:  48.3 tok/s  accepted 205/287
+ttf4096-s2-n2 p05:  40.6 tok/s  accepted 180/337
+ttf4096-s2-n2 p06:  37.0 tok/s  accepted 162/374
+ttf4096-s2-n2 p07:  43.5 tok/s  accepted 112/182
+ttf4096-s2-n2 p08:  36.5 tok/s  accepted 148/344
+ttf4096-s2-n2 p09:  52.2 tok/s  accepted 218/260
+ttf4096-s2-n2 p10:  40.5 tok/s  accepted 95/182
+ttf4096-s2-n2 p11:  43.8 tok/s  accepted 193/310
+ttf4096-s2-n2 p12:  39.5 tok/s  accepted 176/343
+ttf4096-s2-n2 TOTAL: 42.0 tok/s over 3730 tokens, drafts accepted 1972/3483 (56.6%)
+ttf4096-s2-n3 p01:  39.8 tok/s  accepted 206/424
+ttf4096-s2-n3 p02:  30.8 tok/s  accepted 110/384
+ttf4096-s2-n3 p03:  43.1 tok/s  accepted 201/375
+ttf4096-s2-n3 p04:  42.4 tok/s  accepted 214/402
+ttf4096-s2-n3 p05:  32.9 tok/s  accepted 173/525
+ttf4096-s2-n3 p06:  31.4 tok/s  accepted 165/547
+ttf4096-s2-n3 p07:  41.8 tok/s  accepted 123/240
+ttf4096-s2-n3 p08:  32.8 tok/s  accepted 158/483
+ttf4096-s2-n3 p09:  53.3 tok/s  accepted 241/322
+ttf4096-s2-n3 p10:  34.8 tok/s  accepted 109/300
+ttf4096-s2-n3 p11:  40.7 tok/s  accepted 206/429
+ttf4096-s2-n3 p12:  36.7 tok/s  accepted 192/467
+ttf4096-s2-n3 TOTAL: 37.8 tok/s over 3750 tokens, drafts accepted 2098/4898 (42.8%)
+ttf8192-s1-n1 p01:  44.2 tok/s  accepted 153/196
+ttf8192-s1-n1 p02:  39.6 tok/s  accepted 88/150
+ttf8192-s1-n1 p03:  46.0 tok/s  accepted 148/179
+ttf8192-s1-n1 p04:  45.4 tok/s  accepted 155/194
+ttf8192-s1-n1 p05:  43.2 tok/s  accepted 147/202
+ttf8192-s1-n1 p06:  38.4 tok/s  accepted 121/228
+ttf8192-s1-n1 p07:  44.9 tok/s  accepted 92/112
+ttf8192-s1-n1 p08:  39.0 tok/s  accepted 110/191
+ttf8192-s1-n1 p09:  47.3 tok/s  accepted 167/181
+ttf8192-s1-n1 p10:  38.8 tok/s  accepted 66/120
+ttf8192-s1-n1 p11:  43.2 tok/s  accepted 149/200
+ttf8192-s1-n1 p12:  41.6 tok/s  accepted 141/207
+ttf8192-s1-n1 TOTAL: 42.8 tok/s over 3708 tokens, drafts accepted 1537/2160 (71.2%)
+ttf8192-s1-n2 p01:  39.4 tok/s  accepted 178/339
+ttf8192-s1-n2 p02:  32.2 tok/s  accepted 91/284
+ttf8192-s1-n2 p03:  39.8 tok/s  accepted 170/328
+ttf8192-s1-n2 p04:  39.8 tok/s  accepted 179/339
+ttf8192-s1-n2 p05:  36.3 tok/s  accepted 161/374
+ttf8192-s1-n2 p06:  33.0 tok/s  accepted 142/413
+ttf8192-s1-n2 p07:  39.9 tok/s  accepted 104/198
+ttf8192-s1-n2 p08:  32.5 tok/s  accepted 128/384
+ttf8192-s1-n2 p09:  43.2 tok/s  accepted 192/313
+ttf8192-s1-n2 p10:  33.0 tok/s  accepted 76/222
+ttf8192-s1-n2 p11:  38.2 tok/s  accepted 170/356
+ttf8192-s1-n2 p12:  35.4 tok/s  accepted 157/381
+ttf8192-s1-n2 TOTAL: 36.9 tok/s over 3730 tokens, drafts accepted 1748/3931 (44.5%)
+ttf8192-s1-n3 p01:  34.1 tok/s  accepted 182/496
+ttf8192-s1-n3 p02:  28.1 tok/s  accepted 99/417
+ttf8192-s1-n3 p03:  34.4 tok/s  accepted 171/465
+ttf8192-s1-n3 p04:  34.7 tok/s  accepted 185/489
+ttf8192-s1-n3 p05:  28.7 tok/s  accepted 150/597
+ttf8192-s1-n3 p06:  27.7 tok/s  accepted 144/609
+ttf8192-s1-n3 p07:  34.0 tok/s  accepted 106/291
+ttf8192-s1-n3 p08:  28.2 tok/s  accepted 134/555
+ttf8192-s1-n3 p09:  37.3 tok/s  accepted 197/454
+ttf8192-s1-n3 p10:  28.8 tok/s  accepted 90/357
+ttf8192-s1-n3 p11:  32.8 tok/s  accepted 175/519
+ttf8192-s1-n3 p12:  30.4 tok/s  accepted 162/557
+ttf8192-s1-n3 TOTAL: 31.5 tok/s over 3750 tokens, drafts accepted 1795/5806 (30.9%)

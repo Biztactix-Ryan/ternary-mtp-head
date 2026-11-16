@@ -1,0 +1,17 @@
+# never commit data, weights or anything derived from private sessions
+*.gguf
+*.pt
+*.safetensors
+*.parquet
+*.f16
+*.i32
+data/
+out/
+logs/
+sessions-out/
+tasks-sessions.jsonl
+scrub-report.txt
+*extra*.txt
+__pycache__/
+.venv/
+drafts/

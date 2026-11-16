@@ -1,0 +1,33 @@
+wrote out/ttf-27b-mtp-h2h-float.gguf
+wrote out/ttf-27b-mtp-h2h-ternary.gguf
+8635 MiB  out/ttf-27b-mtp-h2h-float.gguf
+7936 MiB  out/ttf-27b-mtp-h2h-ternary.gguf
+7825 MiB  ttf-home/models/ttf-27b/ttf-Qwen3.8-27B-adapters-r0.2-TQ1_P.gguf
+plain prompt1: 35.6 tok/s  n=350  drafts accepted n/a
+plain prompt2: 35.6 tok/s  n=227  drafts accepted n/a
+plain prompt3: 35.5 tok/s  n=335  drafts accepted n/a
+plain VRAM 28581 MiB
+float-n1 prompt1: 43.5 tok/s  n=350  drafts accepted 148/201 (73.6%)
+float-n1 prompt2: 36.2 tok/s  n=239  drafts accepted 72/166 (43.4%)
+float-n1 prompt3: 44.3 tok/s  n=327  drafts accepted 141/186 (75.8%)
+float-n1 VRAM 30181 MiB
+ternary-n1 prompt1: 43.9 tok/s  n=350  drafts accepted 146/203 (71.9%)
+ternary-n1 prompt2: 36.5 tok/s  n=239  drafts accepted 70/168 (41.7%)
+ternary-n1 prompt3: 45.3 tok/s  n=327  drafts accepted 142/185 (76.8%)
+ternary-n1 VRAM 29685 MiB
+float-n2 prompt1: 37.2 tok/s  n=350  drafts accepted 166/363 (45.7%)
+float-n2 prompt2: 29.3 tok/s  n=234  drafts accepted 76/314 (24.2%)
+float-n2 prompt3: 38.9 tok/s  n=335  drafts accepted 164/340 (48.2%)
+float-n2 VRAM 30779 MiB
+ternary-n2 prompt1: 37.3 tok/s  n=350  drafts accepted 159/377 (42.2%)
+ternary-n2 prompt2: 29.4 tok/s  n=234  drafts accepted 71/324 (21.9%)
+ternary-n2 prompt3: 39.1 tok/s  n=335  drafts accepted 160/348 (46.0%)
+ternary-n2 VRAM 30283 MiB
+float-n3 prompt1: 31.5 tok/s  n=350  drafts accepted 167/541 (30.9%)
+float-n3 prompt2: 24.6 tok/s  n=239  drafts accepted 80/474 (16.9%)
+float-n3 prompt3: 33.1 tok/s  n=327  drafts accepted 165/483 (34.2%)
+float-n3 VRAM 31377 MiB
+ternary-n3 prompt1: 31.9 tok/s  n=350  drafts accepted 160/562 (28.5%)
+ternary-n3 prompt2: 25.2 tok/s  n=239  drafts accepted 75/489 (15.3%)
+ternary-n3 prompt3: 34.0 tok/s  n=327  drafts accepted 160/498 (32.1%)
+ternary-n3 VRAM 30881 MiB

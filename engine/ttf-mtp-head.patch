@@ -1,0 +1,24 @@
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 39f802d..d965bfb 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -17,6 +17,7 @@ else()
+     add_subdirectory(batched)
+     add_subdirectory(debug)
+     add_subdirectory(embedding)
++    add_subdirectory(dump-nextn)
+     add_subdirectory(eval-callback)
+ 
+     add_subdirectory(gguf-hash)
+diff --git a/src/llama-model.cpp b/src/llama-model.cpp
+index 82342d8..a0052ee 100644
+--- a/src/llama-model.cpp
++++ b/src/llama-model.cpp
+@@ -2076,6 +2076,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
+                 ttf_load(LLM_TENSOR_FFN_GATE_EXPS,    layer.ffn_gate_exps,    i);
+                 ttf_load(LLM_TENSOR_FFN_UP_EXPS,      layer.ffn_up_exps,      i);
+                 ttf_load(LLM_TENSOR_FFN_DOWN_EXPS,    layer.ffn_down_exps,    i);
++                ttf_load(LLM_TENSOR_NEXTN_EH_PROJ,     layer.nextn.eh_proj,    i); // MTP head input projection
+             }
+             if (!ttf.empty()) {
+                 LLAMA_LOG_INFO("%s: TTF side tensors on %zu weights\n", __func__, ttf.size());
