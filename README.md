@@ -41,7 +41,7 @@ hand-written prompt tasks used for the first smoke test, and result logs.
 ### 1. The stock head on the ternary model (3 prompts)
 
 | Target | Drafting | tok/s | Drafts accepted |
-|---|---|---|---|
+| :--- | :--- | ---: | ---: |
 | Ternary 27B | none | 35.6–35.7 | n/a |
 | Ternary 27B | stock MTP, 3 drafts | 18.0–19.2 | 1.8–4.1% |
 | Ternary 27B | stock MTP, 2 drafts | 21.3–23.0 | 2.2–6.6% |
@@ -56,7 +56,7 @@ is the head, not the method.
 336k generated tokens from 310 conversations, 250 steps (about 4 minutes).
 
 | Variant | Trainable parameters | Held-out agreement before | After |
-|---|---|---|---|
+| :--- | ---: | ---: | ---: |
 | Whole head | 424.7M | 4.6% | 59.9% |
 | Input projection and two input norms only | 52.4M | 4.6% | 53.2% |
 
@@ -66,7 +66,7 @@ The held-out set for this stage was small (8 conversations).
 ### 3. Ternary versus float head, identical training (same start, data and 300 steps)
 
 | Head | Trits | Size added | Held-out agreement |
-|---|---|---|---|
+| :--- | ---: | ---: | ---: |
 | Float F16 | n/a | 810 MiB | 61.9% |
 | Ternary, rank-1024 adapters | 542M | 108 MiB | 57.1% |
 | Ternary, rank-4096 adapters | 894M | 171 MiB | 61.3% |
@@ -83,7 +83,7 @@ and depth did not help at this training length (and would need engine changes).
 than the first one, so percentages are not comparable with sections 2 and 3.
 
 | Head | Size added | Steps | First-draft agreement |
-|---|---|---|---|
+| :--- | ---: | ---: | ---: |
 | Float F16 | 810 MiB | 1,500 | 70.3% |
 | Ternary rank 4096 | 181 MiB | 1,500 | 68.4% |
 | Ternary rank 8192 | 274 MiB | 1,000 | 65.5% (rank 4096 at the same step: 65.0%) |
@@ -91,14 +91,14 @@ than the first one, so percentages are not comparable with sections 2 and 3.
 Multi-draft training (drafts 2 and 3 computed on the head's own outputs, 400 steps):
 
 | Head | Draft 1 | Draft 2 | Draft 3 |
-|---|---|---|---|
+| :--- | ---: | ---: | ---: |
 | Float | 70.3% → 70.2% | 24.9% → 52.4% | 12.8% → 43.2% |
 | Ternary rank 4096 | 68.4% → 68.0% | 26.1% → 49.1% | 13.8% → 39.7% |
 
 Engine, 12 prompts, tok/s with acceptance in brackets. Plain decoding: 35.3 tok/s.
 
 | Head | 1 draft | 2 drafts | 3 drafts |
-|---|---|---|---|
+| :--- | ---: | ---: | ---: |
 | Float, first-draft training | 44.0 (75.5%) | 36.9 (46.6%) | 31.9 (32.1%) |
 | Float, multi-draft training | 43.7 (74.8%) | 42.3 (58.2%) | 37.6 (44.2%) |
 | Ternary 4096, first-draft training | 44.2 (73.4%) | 38.5 (46.8%) | 32.4 (32.0%) |
@@ -108,7 +108,7 @@ Engine, 12 prompts, tok/s with acceptance in brackets. Plain decoding: 35.3 tok/
 A further 1,200 steps of multi-draft training (1,600 in total):
 
 | Head | Draft 1 / 2 / 3 agreement | 1 draft | 2 drafts | 3 drafts |
-|---|---|---|---|---|
+| :--- | ---: | ---: | ---: | ---: |
 | Float | 71.3% / 56.6% / 48.5% | 43.0 (75.7%) | 41.8 (59.5%) | 38.9 (46.9%) |
 | Ternary 4096 | 69.8% / 54.6% / 46.8% | 44.7 (75.6%) | 44.2 (59.6%) | 39.8 (45.3%) |
 
