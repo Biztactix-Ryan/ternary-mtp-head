@@ -32,6 +32,7 @@ ap.add_argument("--rank", type=int, default=1024, help="ternary adapter rank (mu
 ap.add_argument("--rank-kv", type=int, default=256)
 ap.add_argument("--ffn-mult", type=int, default=1, help="ternary head only: widen the FFN by this factor")
 ap.add_argument("--blocks", type=int, default=1, help="ternary head only: number of stacked attention + FFN blocks")
+ap.add_argument("--train-frac", type=float, default=1.0, help="use only this fraction of the training conversations")
 ap.add_argument("--gen-weight", type=float, default=1.0, help="loss weight on generated positions (0 = train on history only)")
 ap.add_argument("--unroll", type=int, default=1, help="draft steps trained (1 = first draft only)")
 ap.add_argument("--unroll-weights", default="1,0.7,0.5")
@@ -47,6 +48,9 @@ def say(*x):
 
 dump = Dump(a.dump)
 train = [e for e in dump.seqs if not is_held_out(e)]
+if a.train_frac < 1.0:                               # data-scaling ablation: a stable subset of conversations
+    import hashlib
+    train = [e for e in train if int(hashlib.sha1(e["conv"].encode()).hexdigest(), 16) % 1000 < a.train_frac * 1000]
 val = [e for e in dump.seqs if is_held_out(e)]
 random.Random(1).shuffle(val)
 val = val[:a.eval_seqs]

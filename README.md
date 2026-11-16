@@ -120,9 +120,10 @@ With the longer run the ternary head reaches the float head's acceptance, and 2 
 - **Ternary is not faster, it is smaller.** Per draft-and-verify cycle the ternary head is 1–4% faster
   than the float one. A plain step takes about 28 ms and a 1-draft cycle about 40 ms; the head's own
   format changes that by well under 1 ms.
-- **One draft is still the fastest setting.** A 2-draft cycle costs about 1.77x a plain step and a
-  3-draft cycle about 2.08x on the ternary engine (about 1.4x for 3 drafts on the Q4_K_XL control).
-  That verify cost, not the head, is the ceiling.
+- **One draft is still the fastest setting, because of verify cost.** On the ternary model each extra token
+  in the verify call costs about 6–9 ms (22–33% of a single-token step); on the Q4_K_XL control it costs
+  about 0.3–1.4 ms. Producing each draft costs another 4–6 ms. With control-like batching the existing head
+  would reach an estimated 51–58 tok/s instead of 44–45. Measurements and breakdown: `results/verify-cost.md`.
 - **A confidence threshold does not help in this engine.** `--spec-draft-p-min` raised acceptance
   (up to 95%) but lowered speed at every setting tried (30–38 tok/s against 42 without it).
 - **History positions as training signal** (float head, 600 steps, scored on generated positions):
