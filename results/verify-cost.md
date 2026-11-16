@@ -61,3 +61,25 @@ the verify call cost what they cost on the Q4_K_XL control (+1.4, +1.7 and +2.1 
 
 Plain decoding is 35.3 tok/s, so that would move the speedup from 1.25x to roughly 1.6x with the head
 that already exists, and would make 2 drafts clearly better than 1.
+
+## Why, from reading the kernels (not profiled)
+
+These are readings of `ggml/src/ggml-cuda` in the patched engine, matched against the timings above.
+They have not been confirmed with a profiler.
+
+- **1–4 tokens: a dedicated matrix-vector kernel.** `mmvq-tq1p.cuh` is a "TQ1_P matrix-vector product for a
+  few tokens (ncols_dst <= 4), table decoded", fused with the TTF scale, bias and adapter steps. Its header
+  notes that decoding trits is compute-bound, not memory-bound. That fits the timings: a Q4_K step is
+  dominated by reading 17 GB of weights once, so extra tokens ride along almost free, while the ternary
+  step reads less than half as much and spends its time on decode and dot-product arithmetic, part of which
+  repeats per token (about 6–7 ms each).
+- **5–8 tokens: the generic path.** The fused kernel only accepts up to 4 tokens. Beyond that the products
+  go through the generic `mul_mat_vec_q` kernels (limit `MMVQ_MAX_BATCH_SIZE` = 8) without the fusion,
+  which matches the higher 8–9 ms per extra token.
+- **More than 8 tokens: no matrix-matrix kernel for dense TQ1_P.** The source says "TQ1_P has no MMQ tile
+  (its 160-value blocks do not divide MMQ_ITER_K)". Batched expert products are expanded to Q4_0 and use
+  that MMQ kernel, but this 27B model is dense, and a flat cost of about 258 ms from 16 to 64 tokens looks
+  like every weight being dequantised and multiplied with cuBLAS on each call.
+
+The same curve explains two other observations from this work: 8 parallel generation slots gave only
+about 3x the single-stream throughput, and a 4-draft setting would fall off the fused path.
