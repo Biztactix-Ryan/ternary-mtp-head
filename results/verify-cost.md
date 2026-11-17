@@ -83,3 +83,30 @@ They have not been confirmed with a profiler.
 
 The same curve explains two other observations from this work: 8 parallel generation slots gave only
 about 3x the single-stream throughput, and a 4-draft setting would fall off the fused path.
+
+## Measured: what producing a draft costs
+
+The "remainder" column above was a subtraction. This is the direct measurement, with timers added to
+the engine's MTP driver (`engine/add_spec_timing.py`, enabled with `TTF_SPEC_TIMING=1`; each timer
+includes a device synchronise). 12 general prompts, in-file heads after 1,600 steps of multi-draft training.
+
+Per cycle the driver makes one **catch-up** call on the head (it replays the tokens of the trunk's
+verify batch through the head, without logits, to keep the head's cache in step) and then one
+**draft** call per drafted token (one token, with logits).
+
+| Head | Drafts | Catch-up call | Each draft call | Draft sampling | Head time per cycle |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Ternary rank 4096 | 1 | 1.50 ms (2.3 tokens) | 2.60 ms | 0.03 ms | 4.1 ms |
+| Ternary rank 4096 | 2 | 1.83 ms (3.3 tokens) | 2.43 ms | 0.03 ms | 6.7 ms |
+| Ternary rank 4096 | 3 | 2.03 ms (4.3 tokens) | 2.33 ms | 0.03 ms | 9.0 ms |
+| Float F16 | 1 | 2.20 ms (2.3 tokens) | 3.47 ms | 0.03 ms | 5.7 ms |
+
+- A 1-draft cycle of 39.4 ms is therefore about 33.2 ms of trunk verification, 4.1 ms of head work
+  (1.5 catch-up + 2.6 draft) and about 2 ms of server-side work, of which about 1.2 ms is also present
+  in plain decoding (28.3 ms cycle against a 27.1 ms trunk call).
+- The ternary head costs 1.6 ms less per cycle than the float head (4.1 against 5.7 ms).
+- A draft call costs about 1.1 ms more than a catch-up call that carries more tokens, so the output
+  projection over the 248k vocabulary is roughly a millisecond of each draft.
+- From reading the driver: the first token of each catch-up call is the same (token, hidden state)
+  pair the previous draft call already ran, so part of the catch-up is repeated work, and folding the
+  catch-up into the next draft call would save most of a call per cycle. That is untested.
