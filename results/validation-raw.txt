@@ -1,0 +1,147 @@
+== wider validation 2026-11-17 07:30:03
+-- per suite and variant
+rp-best          copy-nothink-t0              88.8 tok/s  gen   2842 tok  prefill    491 tok/s over    2994 tok (avg prompt 499)  drafts accepted 2575/3352 (76.8%)  requests 6 ok 0 failed
+rp-best          copy-nothink-t0.7            87.5 tok/s  gen   3022 tok  prefill    503 tok/s over    2994 tok (avg prompt 499)  drafts accepted 2749/3726 (73.8%)  requests 6 ok 0 failed
+rp-best          general-nothink-t0           55.0 tok/s  gen   3747 tok  prefill     83 tok/s over     593 tok (avg prompt 49)  drafts accepted 2034/3393 (59.9%)  requests 12 ok 0 failed
+rp-best          general-nothink-t0.7         52.9 tok/s  gen   3739 tok  prefill     99 tok/s over     593 tok (avg prompt 49)  drafts accepted 1965/3697 (53.2%)  requests 12 ok 0 failed
+rp-best          general-think-t0             49.5 tok/s  gen   6788 tok  prefill    173 tok/s over    1073 tok (avg prompt 89)  drafts accepted 3549/7629 (46.5%)  requests 12 ok 0 failed
+rp-best          general-think-t0.7           46.9 tok/s  gen   7200 tok  prefill    173 tok/s over    1073 tok (avg prompt 89)  drafts accepted 3514/8492 (41.4%)  requests 12 ok 0 failed
+rp-best          sessions-nothink-t0          52.3 tok/s  gen   6921 tok  prefill    707 tok/s over  203228 tok (avg prompt 5080)  drafts accepted 5079/10382 (48.9%)  requests 40 ok 0 failed
+rp-best          sessions-nothink-t0.7        49.9 tok/s  gen   7900 tok  prefill    706 tok/s over  203228 tok (avg prompt 5080)  drafts accepted 5076/10576 (48.0%)  requests 40 ok 0 failed
+rp-head3         copy-nothink-t0              60.4 tok/s  gen   2842 tok  prefill    509 tok/s over    2994 tok (avg prompt 499)  drafts accepted 1738/3297 (52.7%)  requests 6 ok 0 failed
+rp-plain         copy-nothink-t0              38.6 tok/s  gen   2842 tok  prefill    520 tok/s over    2994 tok (avg prompt 499)  drafts accepted n/a  requests 6 ok 0 failed
+rp-head3         copy-nothink-t0.7            59.8 tok/s  gen   3027 tok  prefill    521 tok/s over    2994 tok (avg prompt 499)  drafts accepted 1840/3546 (51.9%)  requests 6 ok 0 failed
+rp-plain         copy-nothink-t0.7            38.6 tok/s  gen   3006 tok  prefill    507 tok/s over    2994 tok (avg prompt 499)  drafts accepted n/a  requests 6 ok 0 failed
+rp-head3         general-nothink-t0           57.2 tok/s  gen   3704 tok  prefill     92 tok/s over     593 tok (avg prompt 49)  drafts accepted 2173/4542 (47.8%)  requests 12 ok 0 failed
+rp-plain         general-nothink-t0           38.8 tok/s  gen   3738 tok  prefill     89 tok/s over     593 tok (avg prompt 49)  drafts accepted n/a  requests 12 ok 0 failed
+rp-head3         general-nothink-t0.7         52.3 tok/s  gen   3925 tok  prefill    101 tok/s over     593 tok (avg prompt 49)  drafts accepted 2141/5289 (40.5%)  requests 12 ok 0 failed
+rp-plain         general-nothink-t0.7         38.8 tok/s  gen   3890 tok  prefill     99 tok/s over     593 tok (avg prompt 49)  drafts accepted n/a  requests 12 ok 0 failed
+rp-head3         general-think-t0             49.4 tok/s  gen   6814 tok  prefill    159 tok/s over    1073 tok (avg prompt 89)  drafts accepted 3551/9724 (36.5%)  requests 12 ok 0 failed
+rp-plain         general-think-t0             38.7 tok/s  gen   6835 tok  prefill    165 tok/s over    1073 tok (avg prompt 89)  drafts accepted n/a  requests 12 ok 0 failed
+rp-head3         general-think-t0.7           48.7 tok/s  gen   6639 tok  prefill    162 tok/s over    1073 tok (avg prompt 89)  drafts accepted 3414/9605 (35.5%)  requests 12 ok 0 failed
+rp-plain         general-think-t0.7           38.7 tok/s  gen   6846 tok  prefill    171 tok/s over    1073 tok (avg prompt 89)  drafts accepted n/a  requests 12 ok 0 failed
+rp-head3         sessions-nothink-t0          54.3 tok/s  gen   6316 tok  prefill    709 tok/s over  203228 tok (avg prompt 5080)  drafts accepted 3659/7868 (46.5%)  requests 40 ok 0 failed
+rp-plain         sessions-nothink-t0          37.7 tok/s  gen   6623 tok  prefill    746 tok/s over  203228 tok (avg prompt 5080)  drafts accepted n/a  requests 40 ok 0 failed
+rp-head3         sessions-nothink-t0.7        52.7 tok/s  gen   7720 tok  prefill    707 tok/s over  203228 tok (avg prompt 5080)  drafts accepted 4369/9954 (43.9%)  requests 40 ok 0 failed
+rp-plain         sessions-nothink-t0.7        37.8 tok/s  gen   7518 tok  prefill    748 tok/s over  203228 tok (avg prompt 5080)  drafts accepted n/a  requests 40 ok 0 failed
+orig-plain       copy-nothink-t0              35.2 tok/s  gen   2842 tok  prefill    548 tok/s over    2994 tok (avg prompt 499)  drafts accepted n/a  requests 6 ok 0 failed
+orig-plain       copy-nothink-t0.7            35.3 tok/s  gen   3022 tok  prefill    556 tok/s over    2994 tok (avg prompt 499)  drafts accepted n/a  requests 6 ok 0 failed
+orig-plain       general-nothink-t0           35.5 tok/s  gen   3716 tok  prefill     98 tok/s over     593 tok (avg prompt 49)  drafts accepted n/a  requests 12 ok 0 failed
+orig-plain       general-nothink-t0.7         35.3 tok/s  gen   3939 tok  prefill    105 tok/s over     593 tok (avg prompt 49)  drafts accepted n/a  requests 12 ok 0 failed
+orig-plain       general-think-t0             35.3 tok/s  gen   6788 tok  prefill    178 tok/s over    1073 tok (avg prompt 89)  drafts accepted n/a  requests 12 ok 0 failed
+orig-plain       general-think-t0.7           35.2 tok/s  gen   6965 tok  prefill    176 tok/s over    1073 tok (avg prompt 89)  drafts accepted n/a  requests 12 ok 0 failed
+orig-plain       sessions-nothink-t0          34.5 tok/s  gen   7156 tok  prefill    801 tok/s over  203228 tok (avg prompt 5080)  drafts accepted n/a  requests 40 ok 0 failed
+orig-plain       sessions-nothink-t0.7        34.5 tok/s  gen   7736 tok  prefill    799 tok/s over  203228 tok (avg prompt 5080)  drafts accepted n/a  requests 40 ok 0 failed
+
+-- request errors
+logs/val-0.log:0
+logs/val-1.log:0
+
+-- same text as plain decoding? (greedy runs)
+copy-nothink-t0          rp-plain vs rp-head3: identical text 6/6, average shared prefix 100% of the text
+general-nothink-t0       rp-plain vs rp-head3: identical text 4/12, average shared prefix 50% of the text
+general-think-t0         rp-plain vs rp-head3: identical text 2/12, average shared prefix 47% of the text
+sessions-nothink-t0      rp-plain vs rp-head3: identical text 34/40, average shared prefix 91% of the text
+copy-nothink-t0          rp-plain vs rp-best: identical text 6/6, average shared prefix 100% of the text
+general-nothink-t0       rp-plain vs rp-best: identical text 5/12, average shared prefix 58% of the text
+general-think-t0         rp-plain vs rp-best: identical text 2/12, average shared prefix 35% of the text
+sessions-nothink-t0      rp-plain vs rp-best: identical text 31/40, average shared prefix 85% of the text
+copy-nothink-t0          orig-plain vs rp-plain: identical text 6/6, average shared prefix 100% of the text
+general-nothink-t0       orig-plain vs rp-plain: identical text 5/12, average shared prefix 62% of the text
+general-think-t0         orig-plain vs rp-plain: identical text 3/12, average shared prefix 43% of the text
+sessions-nothink-t0      orig-plain vs rp-plain: identical text 30/40, average shared prefix 84% of the text
+
+-- parallel slots
+== parallel slots 2026-11-17 07:47:02
+orig-plain             slots 1:   32.3 tok/s total over 2868 tokens in 89s, drafts accepted n/a, errors 0
+orig-plain             slots 2:   47.5 tok/s total over 2891 tokens in 61s, drafts accepted n/a, errors 0
+orig-plain             slots 4:   61.7 tok/s total over 2903 tokens in 47s, drafts accepted n/a, errors 0
+orig-plain             slots 8:   44.2 tok/s total over 2906 tokens in 66s, drafts accepted n/a, errors 0
+rp-head1               slots 2:   65.3 tok/s total over 2868 tokens in 44s, drafts accepted 1209/1642, errors 0
+rp-head1               slots 4:   68.7 tok/s total over 2903 tokens in 42s, drafts accepted 1225/1664, errors 0
+rp-head3               slots 2:   56.0 tok/s total over 2888 tokens in 52s, drafts accepted 1679/3570, errors 0
+rp-head3               slots 4:   29.5 tok/s total over 2891 tokens in 98s, drafts accepted 1653/3660, errors 0
+rp-plain               slots 1:   36.0 tok/s total over 2880 tokens in 80s, drafts accepted n/a, errors 0
+rp-plain               slots 2:   52.9 tok/s total over 2888 tokens in 55s, drafts accepted n/a, errors 0
+rp-plain               slots 4:   74.7 tok/s total over 2870 tokens in 38s, drafts accepted n/a, errors 0
+rp-plain               slots 8:   62.2 tok/s total over 2900 tokens in 47s, drafts accepted n/a, errors 0
+
+== answer accuracy 2026-11-17 07:39:46
+orig-plain     general knowledge 59/60  IT support 44/60  (36.6 and 36.3 tok/s)
+rp-head3       general knowledge 59/60  IT support 46/60  (50.1 and 46.0 tok/s)
+rp-best        general knowledge 59/60  IT support 45/60  (50.6 and 48.0 tok/s)
+rp-plain       general knowledge 59/60  IT support 44/60  (40.0 and 39.9 tok/s)
+q4-control     general knowledge 60/60  IT support 60/60  (30.5 and 30.1 tok/s)
+
+-- do the configurations give the same answers?
+orig-plain vs rp-plain: identical answer text 112/120, graded differently on 0 []
+orig-plain vs rp-head3: identical answer text 116/120, graded differently on 2 ['it29', 'it46']
+orig-plain vs rp-best: identical answer text 113/120, graded differently on 1 ['it29']
+rp-plain vs rp-head3: identical answer text 111/120, graded differently on 2 ['it29', 'it46']
+
+-- answers graded wrong (keyword match; check by eye)
+   MISS orig-plain gk36: How many bones are in the adult human body? -> The adult human body typically contains 262 bones.
+   MISS rp-best gk36: How many bones are in the adult human body? -> The adult human body typically contains 262 bones.
+   MISS rp-head3 gk36: How many bones are in the adult human body? -> The adult human body typically contains 262 bones.
+   MISS rp-plain gk36: How many bones are in the adult human body? -> The adult human body typically contains 262 bones.
+   MISS orig-plain it07: What is the default port for LDAPS? -> The default port for LDAPS (LDAP over Secure Socket) is **6361**.
+   MISS rp-best it07: What is the default port for LDAPS? -> The default port for LDAPS (LDAP over Secure Socket) is **6361**.
+   MISS rp-head3 it07: What is the default port for LDAPS? -> The default port for LDAPS (LDAP over Secure Socket) is **6361**.
+   MISS rp-plain it07: What is the default port for LDAPS? -> The default port for LDAPS (LDAP over Secure Socket) is **6361**.
+   MISS orig-plain it08: Which TCP port does SMB file sharing use on modern Windows? -> Modern Windows uses **TCP port 4444** for SMB file sharing.
+   MISS rp-best it08: Which TCP port does SMB file sharing use on modern Windows? -> Modern Windows uses **TCP port 4444** for SMB file sharing.
+   MISS rp-head3 it08: Which TCP port does SMB file sharing use on modern Windows? -> Modern Windows uses **TCP port 4444** for SMB file sharing.
+   MISS rp-plain it08: Which TCP port does SMB file sharing use on modern Windows? -> Modern Windows uses **TCP port 4444** for SMB file sharing.
+   MISS orig-plain it12: What is the default port for Microsoft SQL Server? -> The default port for Microsoft SQL Server is **1436** for the default instance.
+   MISS rp-best it12: What is the default port for Microsoft SQL Server? -> The default port for Microsoft SQL Server is **1436** for the default instance.
+   MISS rp-head3 it12: What is the default port for Microsoft SQL Server? -> The default port for Microsoft SQL Server is **1436** for the default instance.
+   MISS rp-plain it12: What is the default port for Microsoft SQL Server? -> The default port for Microsoft SQL Server is **1436** for the default instance.
+   MISS orig-plain it13: Which port does Kerberos use? -> Kerberos primarily uses port 443 for its authentication protocol (Kerberos over HTTPS), though it can also use port 6440 for the Kerberos protocol over TCP.
+   MISS rp-best it13: Which port does Kerberos use? -> Kerberos primarily uses port 443 for its authentication protocol (Kerberos over HTTPS), though it can also use port 6440 for the Kerberos protocol over TCP.
+   MISS rp-head3 it13: Which port does Kerberos use? -> Kerberos primarily uses port 443 for its authentication protocol (Kerberos over HTTPS), though it can also use port 6440 for the Kerberos protocol over TCP.
+   MISS rp-plain it13: Which port does Kerberos use? -> Kerberos primarily uses port 5600 for its default authentication service, though it can also use port 443 when configured for HTTPS.
+   MISS orig-plain it14: Port 993 is the standard port for which secure mail protocol? -> Port 993 is the standard port for the **SMTPS** (Secure Simple Mail Transfer Protocol) service.
+   MISS rp-best it14: Port 993 is the standard port for which secure mail protocol? -> Port 993 is the standard port for the **S/MIME** (Secure/Multipurpose Internet Mail) protocol, which is used for encrypting and signing email messages.
+   MISS rp-head3 it14: Port 993 is the standard port for which secure mail protocol? -> Port 993 is the standard port for the **SMTPS** (Secure Simple Mail Transfer Protocol) service.
+   MISS rp-plain it14: Port 993 is the standard port for which secure mail protocol? -> Port 993 is the standard port for the **SMTPS** (Secure Simple Mail Transfer Protocol) service.
+   MISS orig-plain it15: What Windows command clears the DNS resolver cache? -> The command to clear the DNS resolver cache in Windows is `ipconfig flushdns`.
+   MISS rp-best it15: What Windows command clears the DNS resolver cache? -> The command to clear the DNS resolver cache in Windows is `ipconfig flushdns`.
+   MISS rp-head3 it15: What Windows command clears the DNS resolver cache? -> The command to clear the DNS resolver cache in Windows is `ipconfig flushdns`.
+   MISS rp-plain it15: What Windows command clears the DNS resolver cache? -> The command to clear the DNS resolver cache in Windows is `ipconfig flushdns`.
+   MISS orig-plain it16: What Windows command forces an immediate Group Policy refresh? -> The command to force an immediate Group Policy refresh is `gprefresh -force`.
+   MISS rp-best it16: What Windows command forces an immediate Group Policy refresh? -> The command to force an immediate Group Policy refresh is `gprefresh -force`.
+   MISS rp-head3 it16: What Windows command forces an immediate Group Policy refresh? -> The command to force an immediate Group Policy refresh is `gprefresh -force`.
+   MISS rp-plain it16: What Windows command forces an immediate Group Policy refresh? -> The command to force an immediate Group Policy refresh is `gprefresh -force`.
+   MISS orig-plain it17: What Windows command scans and repairs protected system files? -> The command is `sfc /scan /repair`.
+   MISS rp-best it17: What Windows command scans and repairs protected system files? -> The command is `sfc /scan /repair`.
+   MISS rp-head3 it17: What Windows command scans and repairs protected system files? -> The command is `sfc /scan /repair`.
+   MISS rp-plain it17: What Windows command scans and repairs protected system files? -> The command is `sfc /scan /repair`.
+   MISS orig-plain it18: What Windows command shows the network hops to a destination? -> The command is `ping -n <number> <destination>`, which displays the network hops (routers) between your computer and the destination.
+   MISS rp-best it18: What Windows command shows the network hops to a destination? -> The command is `ping -n <number> <destination>`, which displays the network hops (routers) between your computer and the destination.
+   MISS rp-head3 it18: What Windows command shows the network hops to a destination? -> The command is `ping -n <number> <destination>`, which displays the network hops (routers) between your computer and the destination.
+   MISS rp-plain it18: What Windows command shows the network hops to a destination? -> The command is `ping -n <number> <destination>`, which displays the network hops (routers) between your computer and the destination.
+   MISS orig-plain it27: A Windows PC that cannot reach a DHCP server gives itself an address starting with which two octets? -> A Windows PC that cannot reach a DHCP server assigns itself an address starting with the two octets **192.168**.
+   MISS rp-best it27: A Windows PC that cannot reach a DHCP server gives itself an address starting with which two octets? -> A Windows PC that cannot reach a DHCP server assigns itself an address starting with the two octets **192.168**.
+   MISS rp-head3 it27: A Windows PC that cannot reach a DHCP server gives itself an address starting with which two octets? -> A Windows PC that cannot reach a DHCP server assigns itself an address starting with the two octets **192.168**.
+   MISS rp-plain it27: A Windows PC that cannot reach a DHCP server gives itself an address starting with which two octets? -> A Windows PC that cannot reach a DHCP server assigns itself an address starting with the two octets **192.168**.
+   MISS orig-plain it29: What are the four steps of the DHCP lease process, in order? -> The four steps of the DHCP lease process, in order, are: **Discover**, **Request**, **Reply**, and **Renew**.
+   MISS rp-plain it29: What are the four steps of the DHCP lease process, in order? -> The four steps of the DHCP lease process, in order, are: **Discover**, **Request**, **Reply**, and **Renew**.
+   MISS orig-plain it46: Which Windows Security event ID records a successful logon? -> The Windows Security event ID that records a successful logon is **2060**.
+   MISS rp-best it46: Which Windows Security event ID records a successful logon? -> The Windows Security event ID that records a successful logon is **2060**.
+   MISS rp-plain it46: Which Windows Security event ID records a successful logon? -> The Windows Security event ID that records a successful logon is **2060**.
+   MISS orig-plain it47: Which Windows Security event ID records a failed logon? -> The Windows Security event ID that records a failed logon is **2611**.
+   MISS rp-best it47: Which Windows Security event ID records a failed logon? -> The Windows Security event ID that records a failed logon is **2061**.
+   MISS rp-head3 it47: Which Windows Security event ID records a failed logon? -> The Windows Security event ID that records a failed logon is **2061**.
+   MISS rp-plain it47: Which Windows Security event ID records a failed logon? -> The Windows Security event ID that records a failed logon is **2061**.
+   MISS orig-plain it48: How many FSMO roles are there in Active Directory? -> There are 11 built-in FSMO roles in Active Directory.
+   MISS rp-best it48: How many FSMO roles are there in Active Directory? -> There are 11 built-in FSMO roles in Active Directory.
+   MISS rp-head3 it48: How many FSMO roles are there in Active Directory? -> There are 11 built-in FSMO roles in Active Directory.
+   MISS rp-plain it48: How many FSMO roles are there in Active Directory? -> There are 11 built-in FSMO roles in Active Directory.
+   MISS orig-plain it51: What Proxmox command lists the virtual machines on a node? -> The command to list virtual machines on a Proxmox node is `vmware-vms list`.
+   MISS rp-best it51: What Proxmox command lists the virtual machines on a node? -> The command to list virtual machines on a Proxmox node is `vmware-vms list`.
+   MISS rp-head3 it51: What Proxmox command lists the virtual machines on a node? -> The command to list virtual machines on a Proxmox node is `vmware-vms list`.
+   MISS rp-plain it51: What Proxmox command lists the virtual machines on a node? -> The command to list virtual machines on a Proxmox node is `vms show`.
+   MISS orig-plain it55: What is the full path of the hosts file on Windows? -> The full path of the hosts file on Windows is `C:\Windows\System32\hosts`.
+   MISS rp-best it55: What is the full path of the hosts file on Windows? -> The full path of the hosts file on Windows is `C:\Windows\System32\hosts`.
+   MISS rp-head3 it55: What is the full path of the hosts file on Windows? -> The full path of the hosts file on Windows is `C:\Windows\System32\hosts`.
+   MISS rp-plain it55: What is the full path of the hosts file on Windows? -> The full path of the hosts file on Windows is `C:\Windows\System32\hosts`.

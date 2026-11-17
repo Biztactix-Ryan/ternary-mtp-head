@@ -236,6 +236,21 @@ Engine, tok/s (12 general prompts / 6 copy-heavy edits):
 
 Details: `results/deep-drafting.md`.
 
+### 10. Validation beyond the benchmark prompts
+
+- **Speed holds** with thinking on, with sampling, and on real agent turns with about 5,000 tokens of
+  history: the head gives 1.26x to 1.44x over re-packed plain decoding in every condition tested.
+- **Accuracy is unchanged by the re-pack and the head** (60 general-knowledge and 60 IT-support questions):
+  the re-pack changes no grades, the head changes 2 of 120.
+- **The ternary model itself is less accurate on exact facts** than the 4-bit control of the same base
+  model: 59/60 and 44/60 against 60/60 and 60/60. Ports, numbers and command syntax are where it slips.
+- **Outputs are not word-for-word identical to plain decoding**, because the engine's arithmetic differs by
+  call size and near-ties can fall either way.
+- **With parallel slots the head is of limited use**: the slots share one verify call, and calls of more
+  than 8 tokens are slow.
+
+Details: `results/validation.md`.
+
 Raw logs for all of the above are in `results/`:
 
 | File | What it holds |
@@ -247,6 +262,7 @@ Raw logs for all of the above are in `results/`:
 | `data-scaling.txt` | Section 7 |
 | `repack-tq1p.txt` | Section 8 |
 | `deep-drafting.md`, `deep-drafting-raw.txt` | Section 9 |
+| `validation.md`, `validation-raw.txt` | Section 10 |
 
 ## How it works
 
@@ -279,6 +295,8 @@ Raw logs for all of the above are in `results/`:
 
 ## Caveats
 
+- The ternary model is noticeably less accurate than a 4-bit quantisation of the same base model on exact
+  facts (section 10). Nothing here changes that; this work only makes it faster.
 - Everything was measured on one machine, one model and one engine build, greedy with thinking off.
 - The engine comparison uses 12 prompts; differences of a point or two of acceptance are within noise.
 - Most ablations are single runs.
