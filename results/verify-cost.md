@@ -110,3 +110,31 @@ verify batch through the head, without logits, to keep the head's cache in step)
 - From reading the driver: the first token of each catch-up call is the same (token, hidden state)
   pair the previous draft call already ran, so part of the catch-up is repeated work, and folding the
   catch-up into the next draft call would save most of a call per cycle. That is untested.
+
+## Profiled: which kernels the extra tokens cost
+
+NVIDIA Nsight Systems (`nsys profile -t cuda`, kernel summary), trunk only, `llama-bench -n 0 -p <tokens> -r 40`,
+CUDA graphs disabled so every kernel is visible. GPU kernel time per call:
+
+| Kernel family | Share of weights | 1 token | 2 tokens | 4 tokens |
+| :--- | ---: | ---: | ---: | ---: |
+| TQ1_P table kernel (main weights, width divisible by 160) | 53% | 6.96 ms | 7.08 ms | 7.56 ms |
+| Generic TQ1_0 kernel (other main weights, all ternary adapters) | 47% | 11.24 ms | 15.19 ms | 26.30 ms |
+| Elementwise broadcast ops (`k_bin_bcast`) | n/a | 1.83 ms | 4.18 ms | 4.27 ms |
+| Float mat-vec (F16 adapters) | 0.3% | 3.75 ms | 4.17 ms | 4.79 ms |
+| Activation quantise | n/a | 1.41 ms | 1.44 ms | 1.48 ms |
+| Output projection (Q4_K) | n/a | 1.35 ms | 1.35 ms | 1.35 ms |
+| Everything else | n/a | 2.5 ms | 3.3 ms | 3.4 ms |
+| **Total kernel time** | | **29.0 ms** | **36.7 ms** | **49.2 ms** |
+
+- **The TQ1_P table kernel batches almost for free:** 7.0 ms for one token, 7.6 ms for four.
+- **The generic TQ1_0 kernel is where the extra tokens go:** +4.0 ms for the second token and about
+  +5.5 ms for each one after. It is also slower per weight at one token (11.2 ms for 47% of the weights
+  against 7.0 ms for 53%).
+- The elementwise ops add a one-off 2.4 ms when a call has more than one token (1,217 launches become 2,774).
+- This supersedes the earlier reading above that the per-token cost was inherent to ternary arithmetic:
+  the newer kernel shows it is not. The tensors still in the older TQ1_0 layout are the 128 main matrices
+  whose width is not a multiple of 160 (7.7B weights) and the 800 ternary adapter matrices (6.8B weights).
+
+If those tensors ran at the table kernel's rate, the estimate is about 5 ms less per single-token step
+and about 9 ms less per two-token verify call. That is an estimate from the table, not a measurement.
