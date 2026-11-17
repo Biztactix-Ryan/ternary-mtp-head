@@ -111,6 +111,25 @@ verify batch through the head, without logits, to keep the head's cache in step)
   pair the previous draft call already ran, so part of the catch-up is repeated work, and folding the
   catch-up into the next draft call would save most of a call per cycle. That is untested.
 
+## Kernel switches
+
+The engine's environment switches, trunk only, `llama-bench -n 0 -p 1,2,3,4 -r 12`, median ms per call:
+
+| Setting | 1 token | 2 | 3 | 4 |
+| :--- | ---: | ---: | ---: | ---: |
+| Default | 27.2 | 33.4 | 40.7 | 47.4 |
+| `GGML_CUDA_TTF_LINEAR_OFF=1` (fused TTF linear off) | 27.6 | 33.5 | 40.7 | 47.5 |
+| `GGML_CUDA_TQ1P_GENERIC=1` (table kernel off) | 27.4 | 33.9 | 41.9 | 50.3 |
+| `GGML_CUDA_DISABLE_GRAPHS=1` | 32.6 | 40.6 | 45.2 | 51.9 |
+
+- Turning the fused TTF linear off changes nothing, so it is evidently not engaging on this file (format 1,
+  with ternary `ttf_d` / `ttf_u` adapters).
+- CUDA graphs are worth about 5 ms at every size and stay active for multi-token calls.
+
+Weights by layout in the original file: TQ1_P main matrices 16.61B (53.2%), TQ1_0 main matrices 7.72B (24.7%),
+TQ1_0 ternary adapters 6.81B (21.8%), F16 adapters 0.11B (0.3%). The per-kernel tables behind the profile
+below are in `profile/`.
+
 ## Profiled: which kernels the extra tokens cost
 
 NVIDIA Nsight Systems (`nsys profile -t cuda`, kernel summary), trunk only, `llama-bench -n 0 -p <tokens> -r 40`,
@@ -138,3 +157,9 @@ CUDA graphs disabled so every kernel is visible. GPU kernel time per call:
 
 If those tensors ran at the table kernel's rate, the estimate is about 5 ms less per single-token step
 and about 9 ms less per two-token verify call. That is an estimate from the table, not a measurement.
+
+## After re-packing
+
+`scripts/repack_tq1p.py` moves every TQ1_0 tensor to TQ1_P. Trunk ms per call for 1 / 2 / 3 / 4 / 8 / 16 tokens:
+25.5 / 28.3 / 30.4 / 31.5 / 55.1 / 265.9 (original: 27.1 / 33.2 / 40.4 / 47.3 / 82.5 / 258.6). End-to-end
+results are in the README, section 8, and `repack-tq1p.txt`.

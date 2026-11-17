@@ -121,10 +121,13 @@ With the longer run the ternary head reaches the float head's acceptance, and 2 
 - **Ternary is not faster, it is smaller.** Per draft-and-verify cycle the ternary head is 1–4% faster
   than the float one. A plain step takes about 28 ms and a 1-draft cycle about 40 ms; the head's own
   format changes that by well under 1 ms.
-- **One draft is still the fastest setting, because of verify cost.** On the ternary model each extra token
-  in the verify call costs about 6–9 ms (22–33% of a single-token step); on the Q4_K_XL control it costs
-  about 0.3–1.4 ms. Producing each draft costs another 4–6 ms. With control-like batching the existing head
-  would reach an estimated 51–58 tok/s instead of 44–45. Measurements and breakdown: `results/verify-cost.md`.
+- **On the original file, one draft is the fastest setting, because of verify cost.** Each extra token in
+  the verify call costs about 6–9 ms there (22–33% of a single-token step); on the Q4_K_XL control it costs
+  about 0.3–1.4 ms. Section 8 traces this to the weights still in the TQ1_0 layout and removes most of it.
+  Measurements, cycle breakdown and kernel profile: `results/verify-cost.md`.
+- **What a draft costs to produce.** Per cycle the engine calls the head once to catch up with the verify
+  batch (1.5 ms) and once per draft (2.3–2.6 ms each, about 1 ms of it the 248k-row output projection);
+  draft sampling is 0.03 ms. The ternary head costs 4.1 ms per 1-draft cycle against 5.7 ms for the float head.
 - **A confidence threshold does not help in this engine.** `--spec-draft-p-min` raised acceptance
   (up to 95%) but lowered speed at every setting tried (30–38 tok/s against 42 without it).
 - **History positions as training signal** (float head, 600 steps, scored on generated positions):
@@ -173,8 +176,10 @@ The float head trained for the same 1,500 steps on fractions of the day-2 data, 
 | 25% | 0.77M | 65.5% | 0.91 |
 | 50% | 1.54M | 68.5% | 1.06 |
 | 100% | 3.16M | 70.3% | 1.32 |
+| 100%, 3,000 steps | 3.16M | 72.8% | 1.01 |
 
-About 3 points per doubling, with the last step smaller. The full-data run is also the one most short
+About 3 points per doubling, with the last step smaller until the full-data run is given twice the
+steps (72.8%). The full-data run is also the one most short
 of training steps (highest training loss), so the head is still data-limited at 3M tokens. At one
 draft, though, a few more points of acceptance are worth only 1–3 tok/s on this engine.
 
@@ -231,7 +236,17 @@ Engine, tok/s (12 general prompts / 6 copy-heavy edits):
 
 Details: `results/deep-drafting.md`.
 
-Raw logs for all of the above are in `results/`.
+Raw logs for all of the above are in `results/`:
+
+| File | What it holds |
+| :--- | :--- |
+| `smoke-engine-test.txt`, `training-curves-day1.txt`, `head-to-head-engine.txt` | Sections 1 to 3 |
+| `overnight-summary.txt`, `training-curves-overnight.txt`, `followup-summary.txt` | Sections 4 and 5 |
+| `verify-cost.md`, `batch-size-bench-*.jsonl`, `profile/` | Verify cost: timings by batch size, cycle breakdown, timers, kernel profile |
+| `lookup-drafting.txt` | Section 6 |
+| `data-scaling.txt` | Section 7 |
+| `repack-tq1p.txt` | Section 8 |
+| `deep-drafting.md`, `deep-drafting-raw.txt` | Section 9 |
 
 ## How it works
 
@@ -253,6 +268,12 @@ Raw logs for all of the above are in `results/`.
   secrets first. It is pattern-based plus a list of literal strings; read its docstring before trusting it.
 - `scripts/build_tasks.py`: rebuilds the public prompt set from its sources (not redistributed here).
 - `scripts/overnight.sh`, `scripts/next.sh`: the unattended runs behind sections 4 and 5.
+- `scripts/repack_tq1p.py`: re-packs a TTF GGUF's TQ1_0 tensors as TQ1_P (section 8). Needs the engine patch.
+- `engine/ttf-mtp-head.patch`, `engine/patch_repack_engine.py`: the engine changes (six lines in the loader
+  and graph, plus the build entry for the dumper). `engine/add_spec_timing.py` adds the optional timers.
+- `scripts/bench12.py`, `scripts/bench_copy.py`: the 12 general prompts and the 6 copy-heavy edits.
+- `scripts/lookup.sh`, `scripts/deep-draft.sh`, `scripts/deep5.sh`, `scripts/scale.sh`, `scripts/repack-test.sh`:
+  the runs behind sections 6 to 9.
 
 `docs/original-runbook.md` is the plan this started from, including the parts that turned out wrong.
 
