@@ -251,6 +251,32 @@ Details: `results/deep-drafting.md`.
 
 Details: `results/validation.md`.
 
+### 11. Large batches: the engine fix for calls of more than 8 tokens (day 4)
+
+Calls of more than 8 tokens paid a fixed ~262 ms, because the CUDA backend unpacked every ternary weight
+to floats on each call. `engine/ttf-large-batch.patch` (about 145 added lines) lets the engine's batched
+quantised kernel read TQ1_P weights directly.
+
+| | Before | After |
+| :--- | ---: | ---: |
+| 16-token call | 266 ms | 57 ms |
+| Prefill, 2,048 tokens | 831 tok/s | 1,192 tok/s |
+| Head + `ngram-mod`, copy-heavy edits | 84.4 tok/s | 142.7 tok/s |
+| Head + `ngram-mod`, general prompts | 53.9 tok/s | 54.2 tok/s |
+| Head 3 drafts, 4 parallel slots | 29.5 tok/s total | 75.5 tok/s total |
+| Plain, 8 parallel slots | 62.2 tok/s total | 69.4 tok/s total |
+
+- **Head plus lookup is now the best single setting** (`--spec-type draft-mtp,ngram-mod --spec-draft-n-max 2`).
+- **This supersedes the "flat ~258 ms" figures** in sections 6, 9 and 10 and in `verify-cost.md`, which
+  describe the engine before this patch.
+- **Deep head drafting and the head at 4 or more slots are still not worth it**, for the reasons in
+  sections 9 and 10; they are just no longer catastrophic.
+- **Output:** the new path is as close to the old dense path as the engine's other paths are to each other
+  (same top token on 28 of 28 prompts); accuracy on the 120 questions is unchanged.
+- **The 4-bit control is still about 2x faster at prefill** (2,368 tok/s).
+
+Details: `results/large-batch.md`.
+
 Raw logs for all of the above are in `results/`:
 
 | File | What it holds |
@@ -263,6 +289,7 @@ Raw logs for all of the above are in `results/`:
 | `repack-tq1p.txt` | Section 8 |
 | `deep-drafting.md`, `deep-drafting-raw.txt` | Section 9 |
 | `validation.md`, `validation-raw.txt` | Section 10 |
+| `large-batch.md`, `large-batch-raw.txt` | Section 11 |
 
 ## How it works
 
@@ -285,6 +312,8 @@ Raw logs for all of the above are in `results/`:
 - `scripts/build_tasks.py`: rebuilds the public prompt set from its sources (not redistributed here).
 - `scripts/overnight.sh`, `scripts/next.sh`: the unattended runs behind sections 4 and 5.
 - `scripts/repack_tq1p.py`: re-packs a TTF GGUF's TQ1_0 tensors as TQ1_P (section 8). Needs the engine patch.
+- `engine/ttf-large-batch.patch` (applied by `patch_bigbatch.py` then `patch_mmq_tq1p.py`): native batched-kernel
+  tiles for TQ1_P, section 11
 - `engine/ttf-mtp-head.patch`, `engine/patch_repack_engine.py`: the engine changes (six lines in the loader
   and graph, plus the build entry for the dumper). `engine/add_spec_timing.py` adds the optional timers.
 - `scripts/bench12.py`, `scripts/bench_copy.py`: the 12 general prompts and the 6 copy-heavy edits.

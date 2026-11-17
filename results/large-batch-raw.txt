@@ -1,0 +1,50 @@
+== after the large-batch fix 2026-11-17 10:17:59
+rp-plain               slots 1:   36.4 tok/s total over 2880 tokens in 79s, drafts accepted n/a, errors 0
+rp-plain               slots 2:   56.6 tok/s total over 2900 tokens in 51s, drafts accepted n/a, errors 0
+rp-plain               slots 4:   80.8 tok/s total over 2899 tokens in 36s, drafts accepted n/a, errors 0
+rp-plain               slots 8:   69.4 tok/s total over 2880 tokens in 41s, drafts accepted n/a, errors 0
+rp-head3               slots 2:   55.5 tok/s total over 2868 tokens in 52s, drafts accepted 1646/3610, errors 0
+rp-head3               slots 4:   75.5 tok/s total over 2880 tokens in 38s, drafts accepted 1650/3634, errors 0
+rp-head3               slots 8:   71.4 tok/s total over 2880 tokens in 40s, drafts accepted 1601/3780, errors 0
+plain TOTAL: 39.5 tok/s over 3692 tokens, drafts accepted n/a
+plain COPY-TOTAL: 39.0 tok/s over 2842 tokens, drafts accepted n/a
+lookup-n16 TOTAL: 39.0 tok/s over 3691 tokens, drafts accepted 0/64 (0.0%)
+lookup-n16 COPY-TOTAL: 115.8 tok/s over 2842 tokens, drafts accepted 2284/3008 (75.9%)
+rp-head1               slots 2:   68.1 tok/s total over 2900 tokens in 43s, drafts accepted 1220/1665, errors 0
+rp-head1               slots 4:   73.7 tok/s total over 2891 tokens in 39s, drafts accepted 1233/1641, errors 0
+rp-head1               slots 8:   71.8 tok/s total over 2883 tokens in 40s, drafts accepted 1186/1680, errors 0
+head-n3 TOTAL: 54.1 tok/s over 3659 tokens, drafts accepted 2107/4592 (45.9%)
+head-n3 COPY-TOTAL: 58.4 tok/s over 2842 tokens, drafts accepted 1740/3294 (52.8%)
+head-n8 TOTAL: 33.0 tok/s over 3767 tokens, drafts accepted 2306/11489 (20.1%)
+head-n8 COPY-TOTAL: 33.6 tok/s over 2842 tokens, drafts accepted 1776/8480 (20.9%)
+head+lookup-n2 TOTAL: 54.2 tok/s over 3784 tokens, drafts accepted 2044/3497 (58.5%)
+head+lookup-n2 COPY-TOTAL: 142.7 tok/s over 2842 tokens, drafts accepted 2575/3352 (76.8%)
+head+lookup-n16 TOTAL: 27.5 tok/s over 3683 tokens, drafts accepted 2277/21963 (10.4%)
+head+lookup-n16 COPY-TOTAL: 94.7 tok/s over 2842 tokens, drafts accepted 2597/5840 (44.5%)
+head+lookup-n16-p0.6 TOTAL: 32.1 tok/s over 3685 tokens, drafts accepted 1962/2775 (70.7%)
+head+lookup-n16-p0.6 COPY-TOTAL: 111.9 tok/s over 2842 tokens, drafts accepted 2585/3426 (75.5%)
+BIGBATCH_DONE
+
+
+== prompt processing by batch size, llama-bench -n 0 (tok/s; ms per call = batch / rate)
+batch   original-dense   q4-expand   native-tiles   Q4_K_XL control
+9          34.3            75.2        160.4          216.0
+12         45.7           107.8        214.6            -
+16         60.2           142.4        281.8          374.1
+32        120.4           275.2        551.5          718.2
+64        232.0           473.3        870.1         1286.3
+128       411.5           727.9       1183.5         1864.6
+512       850.2          1087.2       1237.9         2355.1
+2048      830.8          1051.8       1192.5         2368.1
+
+== next-token distribution after prefill, 28 prompts of 26-1397 tokens (compare_paths.py)
+native vs dense:      same top token 28/28, log-prob difference mean 0.02862 max 0.28835
+q4-expand vs dense:   same top token 28/28, log-prob difference mean 0.03113 max 0.39958
+native vs q4-expand:  same top token 28/28, log-prob difference mean 0.03054 max 0.15079
+native vs native:     same top token 28/28, log-prob difference mean 0.00000 max 0.00000
+
+== greedy text, native vs dense: general prompts identical 4/12, 40 agent turns identical 28/40
+== agent turns (avg prompt 5080 tokens): prefill 750 tok/s dense, 1051 tok/s native
+
+== accuracy on the patched engine, head + ngram-mod
+bb-best        general knowledge 59/60  IT support 46/60
