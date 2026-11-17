@@ -1,0 +1,261 @@
+== lookup drafting summary 2026-11-16 23:56:29
+-- general prompts (12)
+mtp1 TOTAL: 44.1 tok/s over 3708 tokens, drafts accepted 1592/2105 (75.6%)
+mtp2 TOTAL: 43.3 tok/s over 3730 tokens, drafts accepted 2019/3388 (59.6%)
+mtp1+ngram-m3 TOTAL: 43.6 tok/s over 3708 tokens, drafts accepted 1592/2105 (75.6%)
+mtp1+ngram-m48 TOTAL: 36.2 tok/s over 3705 tokens, drafts accepted 1645/3624 (45.4%)
+mtp1+ngram-mod TOTAL: 43.0 tok/s over 3708 tokens, drafts accepted 1592/2151 (74.0%)
+ngram-m3+mtp1 TOTAL: 43.3 tok/s over 3708 tokens, drafts accepted 1592/2105 (75.6%)
+ngram-m48+mtp1 TOTAL: 35.5 tok/s over 3705 tokens, drafts accepted 1645/3624 (45.4%)
+-- copy-heavy edits (6)
+mtp1 COPY-TOTAL: 46.5 tok/s over 2842 tokens, drafts accepted 1314/1525 (86.2%)
+mtp2 COPY-TOTAL: 46.4 tok/s over 2842 tokens, drafts accepted 1632/2414 (67.6%)
+mtp1+ngram-m3 COPY-TOTAL: 45.6 tok/s over 2842 tokens, drafts accepted 1314/1525 (86.2%)
+mtp1+ngram-m48 COPY-TOTAL: 79.5 tok/s over 2842 tokens, drafts accepted 2629/3247 (81.0%)
+mtp1+ngram-mod COPY-TOTAL: 81.6 tok/s over 2842 tokens, drafts accepted 2509/3276 (76.6%)
+ngram-m3+mtp1 COPY-TOTAL: 45.6 tok/s over 2842 tokens, drafts accepted 1314/1525 (86.2%)
+ngram-m48+mtp1 COPY-TOTAL: 77.0 tok/s over 2842 tokens, drafts accepted 2629/3247 (81.0%)
+plain: server failed to start: 0.02.171.784 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+ngram-m3: server failed to start: 0.02.239.700 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+ngram-m7: server failed to start: 0.02.118.560 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+ngram-m48: server failed to start: 0.02.072.122 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+ngram-mod: server failed to start: 0.02.255.933 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+-- baselines without the head (plain trunk file)
+plain TOTAL: 35.7 tok/s over 3716 tokens, drafts accepted n/a
+plain COPY-TOTAL: 35.4 tok/s over 2842 tokens, drafts accepted n/a
+ngram-m3 TOTAL: 35.4 tok/s over 3716 tokens, drafts accepted n/a
+ngram-m3 COPY-TOTAL: 35.2 tok/s over 2842 tokens, drafts accepted n/a
+ngram-m48 TOTAL: 31.3 tok/s over 3708 tokens, drafts accepted 112/1419 (7.9%)
+ngram-m48 COPY-TOTAL: 75.4 tok/s over 2842 tokens, drafts accepted 2532/3126 (81.0%)
+ngram-mod TOTAL: 35.4 tok/s over 3716 tokens, drafts accepted 0/64 (0.0%)
+ngram-mod COPY-TOTAL: 78.3 tok/s over 2842 tokens, drafts accepted 2284/3008 (75.9%)
+ngram-m7 TOTAL: 35.2 tok/s over 3716 tokens, drafts accepted n/a
+ngram-m7 COPY-TOTAL: 35.2 tok/s over 2842 tokens, drafts accepted n/a
+
+-- per prompt
+plain: server failed to start: 0.02.171.784 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+0.02.184.712 E srv  server_run_i: exiting due to model loading error
+mtp1 p01:  46.4 tok/s  accepted 160/189
+mtp1 p02:  40.2 tok/s  accepted 90/149
+mtp1 p03:  46.1 tok/s  accepted 150/177
+mtp1 p04:  46.9 tok/s  accepted 163/186
+mtp1 p05:  43.8 tok/s  accepted 149/199
+mtp1 p06:  40.0 tok/s  accepted 129/220
+mtp1 p07:  45.7 tok/s  accepted 93/110
+mtp1 p08:  40.9 tok/s  accepted 118/183
+mtp1 p09:  48.7 tok/s  accepted 169/179
+mtp1 p10:  41.4 tok/s  accepted 74/113
+mtp1 p11:  44.7 tok/s  accepted 153/196
+mtp1 p12:  42.3 tok/s  accepted 144/204
+mtp1 c01:   46.6 tok/s  n=632  accepted 295/337
+mtp1 c02:   48.0 tok/s  n=575  accepted 275/299
+mtp1 c03:   44.9 tok/s  n=464  accepted 206/257
+mtp1 c04:   44.8 tok/s  n=491  accepted 216/274
+mtp1 c05:   47.3 tok/s  n=340  accepted 161/179
+mtp1 c06:   46.9 tok/s  n=340  accepted 161/179
+mtp2 p01:  44.6 tok/s  accepted 194/307
+mtp2 p02:  38.0 tok/s  accepted 112/242
+mtp2 p03:  46.3 tok/s  accepted 192/284
+mtp2 p04:  47.7 tok/s  accepted 205/287
+mtp2 p05:  41.6 tok/s  accepted 183/331
+mtp2 p06:  38.0 tok/s  accepted 167/364
+mtp2 p07:  46.7 tok/s  accepted 117/172
+mtp2 p08:  37.8 tok/s  accepted 153/334
+mtp2 p09:  53.7 tok/s  accepted 222/252
+mtp2 p10:  40.4 tok/s  accepted 95/182
+mtp2 p11:  44.9 tok/s  accepted 196/304
+mtp2 p12:  41.8 tok/s  accepted 183/329
+mtp2 c01:   47.1 tok/s  n=632  accepted 369/526
+mtp2 c02:   48.3 tok/s  n=575  accepted 342/464
+mtp2 c03:   44.9 tok/s  n=464  accepted 260/408
+mtp2 c04:   44.5 tok/s  n=491  accepted 274/434
+mtp2 c05:   46.8 tok/s  n=340  accepted 196/286
+mtp2 c06:   45.8 tok/s  n=340  accepted 191/296
+ngram-m3: server failed to start: 0.02.239.700 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+0.02.253.698 E srv  server_run_i: exiting due to model loading error
+ngram-m7: server failed to start: 0.02.118.560 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+0.02.135.251 E srv  server_run_i: exiting due to model loading error
+ngram-m48: server failed to start: 0.02.072.122 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+0.02.084.668 E srv  server_run_i: exiting due to model loading error
+ngram-mod: server failed to start: 0.02.255.933 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 6432, got 6338
+0.02.272.422 E srv  server_run_i: exiting due to model loading error
+mtp1+ngram-m3 p01:  45.6 tok/s  accepted 160/189
+mtp1+ngram-m3 p02:  39.5 tok/s  accepted 90/149
+mtp1+ngram-m3 p03:  45.8 tok/s  accepted 150/177
+mtp1+ngram-m3 p04:  46.8 tok/s  accepted 163/186
+mtp1+ngram-m3 p05:  43.2 tok/s  accepted 149/199
+mtp1+ngram-m3 p06:  39.7 tok/s  accepted 129/220
+mtp1+ngram-m3 p07:  45.8 tok/s  accepted 93/110
+mtp1+ngram-m3 p08:  40.3 tok/s  accepted 118/183
+mtp1+ngram-m3 p09:  47.6 tok/s  accepted 169/179
+mtp1+ngram-m3 p10:  41.1 tok/s  accepted 74/113
+mtp1+ngram-m3 p11:  44.0 tok/s  accepted 153/196
+mtp1+ngram-m3 p12:  42.0 tok/s  accepted 144/204
+mtp1+ngram-m3 c01:   45.8 tok/s  n=632  accepted 295/337
+mtp1+ngram-m3 c02:   47.0 tok/s  n=575  accepted 275/299
+mtp1+ngram-m3 c03:   44.2 tok/s  n=464  accepted 206/257
+mtp1+ngram-m3 c04:   43.9 tok/s  n=491  accepted 216/274
+mtp1+ngram-m3 c05:   46.3 tok/s  n=340  accepted 161/179
+mtp1+ngram-m3 c06:   46.5 tok/s  n=340  accepted 161/179
+mtp1+ngram-m48 p01:  45.5 tok/s  accepted 160/189
+mtp1+ngram-m48 p02:  39.7 tok/s  accepted 90/149
+mtp1+ngram-m48 p03:  32.1 tok/s  accepted 162/456
+mtp1+ngram-m48 p04:  35.7 tok/s  accepted 161/299
+mtp1+ngram-m48 p05:  25.8 tok/s  accepted 188/748
+mtp1+ngram-m48 p06:  35.4 tok/s  accepted 127/321
+mtp1+ngram-m48 p07:  46.5 tok/s  accepted 93/110
+mtp1+ngram-m48 p08:  35.7 tok/s  accepted 117/203
+mtp1+ngram-m48 p09:  32.9 tok/s  accepted 176/546
+mtp1+ngram-m48 p10:  40.8 tok/s  accepted 74/113
+mtp1+ngram-m48 p11:  41.1 tok/s  accepted 156/239
+mtp1+ngram-m48 p12:  38.9 tok/s  accepted 141/251
+mtp1+ngram-m48 c01:   64.4 tok/s  n=632  accepted 548/782
+mtp1+ngram-m48 c02:   89.3 tok/s  n=575  accepted 543/639
+mtp1+ngram-m48 c03:   84.6 tok/s  n=464  accepted 438/509
+mtp1+ngram-m48 c04:   75.0 tok/s  n=491  accepted 455/582
+mtp1+ngram-m48 c05:   74.9 tok/s  n=340  accepted 316/396
+mtp1+ngram-m48 c06:  113.4 tok/s  n=340  accepted 329/339
+mtp1+ngram-mod p01:  45.2 tok/s  accepted 160/189
+mtp1+ngram-mod p02:  39.1 tok/s  accepted 90/149
+mtp1+ngram-mod p03:  41.5 tok/s  accepted 150/223
+mtp1+ngram-mod p04:  46.4 tok/s  accepted 163/186
+mtp1+ngram-mod p05:  42.9 tok/s  accepted 149/199
+mtp1+ngram-mod p06:  39.2 tok/s  accepted 129/220
+mtp1+ngram-mod p07:  45.5 tok/s  accepted 93/110
+mtp1+ngram-mod p08:  40.7 tok/s  accepted 118/183
+mtp1+ngram-mod p09:  47.7 tok/s  accepted 169/179
+mtp1+ngram-mod p10:  40.7 tok/s  accepted 74/113
+mtp1+ngram-mod p11:  44.1 tok/s  accepted 153/196
+mtp1+ngram-mod p12:  42.0 tok/s  accepted 144/204
+mtp1+ngram-mod c01:   67.3 tok/s  n=632  accepted 504/691
+mtp1+ngram-mod c02:   85.6 tok/s  n=575  accepted 524/677
+mtp1+ngram-mod c03:   81.4 tok/s  n=464  accepted 413/552
+mtp1+ngram-mod c04:   85.5 tok/s  n=491  accepted 442/550
+mtp1+ngram-mod c05:   70.5 tok/s  n=340  accepted 293/422
+mtp1+ngram-mod c06:  134.1 tok/s  n=340  accepted 333/384
+ngram-m3+mtp1 p01:  45.7 tok/s  accepted 160/189
+ngram-m3+mtp1 p02:  39.4 tok/s  accepted 90/149
+ngram-m3+mtp1 p03:  45.5 tok/s  accepted 150/177
+ngram-m3+mtp1 p04:  45.8 tok/s  accepted 163/186
+ngram-m3+mtp1 p05:  42.8 tok/s  accepted 149/199
+ngram-m3+mtp1 p06:  39.4 tok/s  accepted 129/220
+ngram-m3+mtp1 p07:  45.4 tok/s  accepted 93/110
+ngram-m3+mtp1 p08:  40.3 tok/s  accepted 118/183
+ngram-m3+mtp1 p09:  47.5 tok/s  accepted 169/179
+ngram-m3+mtp1 p10:  40.7 tok/s  accepted 74/113
+ngram-m3+mtp1 p11:  44.0 tok/s  accepted 153/196
+ngram-m3+mtp1 p12:  41.9 tok/s  accepted 144/204
+ngram-m3+mtp1 c01:   45.9 tok/s  n=632  accepted 295/337
+ngram-m3+mtp1 c02:   47.0 tok/s  n=575  accepted 275/299
+ngram-m3+mtp1 c03:   44.1 tok/s  n=464  accepted 206/257
+ngram-m3+mtp1 c04:   43.8 tok/s  n=491  accepted 216/274
+ngram-m3+mtp1 c05:   46.3 tok/s  n=340  accepted 161/179
+ngram-m3+mtp1 c06:   46.0 tok/s  n=340  accepted 161/179
+ngram-m48+mtp1 p01:  45.0 tok/s  accepted 160/189
+ngram-m48+mtp1 p02:  39.3 tok/s  accepted 90/149
+ngram-m48+mtp1 p03:  31.3 tok/s  accepted 162/456
+ngram-m48+mtp1 p04:  35.2 tok/s  accepted 161/299
+ngram-m48+mtp1 p05:  24.9 tok/s  accepted 188/748
+ngram-m48+mtp1 p06:  34.4 tok/s  accepted 127/321
+ngram-m48+mtp1 p07:  45.7 tok/s  accepted 93/110
+ngram-m48+mtp1 p08:  35.0 tok/s  accepted 117/203
+ngram-m48+mtp1 p09:  32.4 tok/s  accepted 176/546
+ngram-m48+mtp1 p10:  40.7 tok/s  accepted 74/113
+ngram-m48+mtp1 p11:  40.8 tok/s  accepted 156/239
+ngram-m48+mtp1 p12:  37.8 tok/s  accepted 141/251
+ngram-m48+mtp1 c01:   63.8 tok/s  n=632  accepted 548/782
+ngram-m48+mtp1 c02:   84.1 tok/s  n=575  accepted 543/639
+ngram-m48+mtp1 c03:   82.0 tok/s  n=464  accepted 438/509
+ngram-m48+mtp1 c04:   71.6 tok/s  n=491  accepted 455/582
+ngram-m48+mtp1 c05:   73.4 tok/s  n=340  accepted 316/396
+ngram-m48+mtp1 c06:  109.9 tok/s  n=340  accepted 329/339
+plain p01:  35.7 tok/s  accepted n/a
+plain p02:  35.9 tok/s  accepted n/a
+plain p03:  35.7 tok/s  accepted n/a
+plain p04:  35.7 tok/s  accepted n/a
+plain p05:  35.6 tok/s  accepted n/a
+plain p06:  35.7 tok/s  accepted n/a
+plain p07:  35.6 tok/s  accepted n/a
+plain p08:  35.5 tok/s  accepted n/a
+plain p09:  35.5 tok/s  accepted n/a
+plain p10:  35.6 tok/s  accepted n/a
+plain p11:  35.4 tok/s  accepted n/a
+plain p12:  35.4 tok/s  accepted n/a
+plain c01:   35.3 tok/s  n=632  accepted n/a
+plain c02:   35.2 tok/s  n=575  accepted n/a
+plain c03:   35.4 tok/s  n=464  accepted n/a
+plain c04:   35.3 tok/s  n=491  accepted n/a
+plain c05:   35.2 tok/s  n=340  accepted n/a
+plain c06:   35.3 tok/s  n=340  accepted n/a
+ngram-m3 p01:  35.3 tok/s  accepted n/a
+ngram-m3 p02:  35.5 tok/s  accepted n/a
+ngram-m3 p03:  35.2 tok/s  accepted n/a
+ngram-m3 p04:  35.2 tok/s  accepted n/a
+ngram-m3 p05:  35.2 tok/s  accepted n/a
+ngram-m3 p06:  35.2 tok/s  accepted n/a
+ngram-m3 p07:  35.5 tok/s  accepted n/a
+ngram-m3 p08:  35.3 tok/s  accepted n/a
+ngram-m3 p09:  35.1 tok/s  accepted n/a
+ngram-m3 p10:  35.2 tok/s  accepted n/a
+ngram-m3 p11:  35.2 tok/s  accepted n/a
+ngram-m3 p12:  35.1 tok/s  accepted n/a
+ngram-m3 c01:   35.1 tok/s  n=632  accepted n/a
+ngram-m3 c02:   35.1 tok/s  n=575  accepted n/a
+ngram-m3 c03:   35.2 tok/s  n=464  accepted n/a
+ngram-m3 c04:   35.1 tok/s  n=491  accepted n/a
+ngram-m3 c05:   35.2 tok/s  n=340  accepted n/a
+ngram-m3 c06:   35.2 tok/s  n=340  accepted n/a
+ngram-m48 p01:  33.4 tok/s  accepted 0/48
+ngram-m48 p02:  35.5 tok/s  accepted n/a
+ngram-m48 p03:  27.4 tok/s  accepted 42/344
+ngram-m48 p04:  31.4 tok/s  accepted 10/112
+ngram-m48 p05:  31.6 tok/s  accepted 5/140
+ngram-m48 p06:  32.6 tok/s  accepted 3/96
+ngram-m48 p07:  35.4 tok/s  accepted n/a
+ngram-m48 p08:  31.6 tok/s  accepted 6/47
+ngram-m48 p09:  25.4 tok/s  accepted 35/440
+ngram-m48 p10:  34.9 tok/s  accepted n/a
+ngram-m48 p11:  30.9 tok/s  accepted 8/144
+ngram-m48 p12:  32.3 tok/s  accepted 3/48
+ngram-m48 c01:   59.0 tok/s  n=632  accepted 498/720
+ngram-m48 c02:   82.7 tok/s  n=575  accepted 528/624
+ngram-m48 c03:   80.6 tok/s  n=464  accepted 429/498
+ngram-m48 c04:   74.2 tok/s  n=491  accepted 444/564
+ngram-m48 c05:   72.3 tok/s  n=340  accepted 307/384
+ngram-m48 c06:  112.8 tok/s  n=340  accepted 326/336
+ngram-mod p01:  35.6 tok/s  accepted n/a
+ngram-mod p02:  35.8 tok/s  accepted n/a
+ngram-mod p03:  33.8 tok/s  accepted 0/64
+ngram-mod p04:  35.5 tok/s  accepted n/a
+ngram-mod p05:  35.4 tok/s  accepted n/a
+ngram-mod p06:  35.4 tok/s  accepted n/a
+ngram-mod p07:  35.3 tok/s  accepted n/a
+ngram-mod p08:  35.3 tok/s  accepted n/a
+ngram-mod p09:  35.4 tok/s  accepted n/a
+ngram-mod p10:  35.5 tok/s  accepted n/a
+ngram-mod p11:  35.2 tok/s  accepted n/a
+ngram-mod p12:  35.5 tok/s  accepted n/a
+ngram-mod c01:   60.9 tok/s  n=632  accepted 404/576
+ngram-mod c02:   84.5 tok/s  n=575  accepted 489/640
+ngram-mod c03:   81.4 tok/s  n=464  accepted 385/512
+ngram-mod c04:   85.0 tok/s  n=491  accepted 413/512
+ngram-mod c05:   65.2 tok/s  n=340  accepted 260/384
+ngram-mod c06:  137.3 tok/s  n=340  accepted 333/384
+ngram-m7 p01:  34.9 tok/s  accepted n/a
+ngram-m7 p02:  35.2 tok/s  accepted n/a
+ngram-m7 p03:  35.2 tok/s  accepted n/a
+ngram-m7 p04:  35.3 tok/s  accepted n/a
+ngram-m7 p05:  35.2 tok/s  accepted n/a
+ngram-m7 p06:  35.1 tok/s  accepted n/a
+ngram-m7 p07:  35.1 tok/s  accepted n/a
+ngram-m7 p08:  35.1 tok/s  accepted n/a
+ngram-m7 p09:  35.1 tok/s  accepted n/a
+ngram-m7 p10:  35.2 tok/s  accepted n/a
+ngram-m7 p11:  35.1 tok/s  accepted n/a
+ngram-m7 p12:  35.2 tok/s  accepted n/a
+ngram-m7 c01:   35.1 tok/s  n=632  accepted n/a
+ngram-m7 c02:   35.2 tok/s  n=575  accepted n/a
+ngram-m7 c03:   35.2 tok/s  n=464  accepted n/a
+ngram-m7 c04:   35.1 tok/s  n=491  accepted n/a
+ngram-m7 c05:   35.2 tok/s  n=340  accepted n/a
+ngram-m7 c06:   35.1 tok/s  n=340  accepted n/a

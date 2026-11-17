@@ -18,7 +18,8 @@ the engine patch and the measurements from two days of fixing that:
 
 Result: draft acceptance at one draft went from 2–10% (stock head) to about 75%, and decoding
 from 35.3 to about 44–45 tok/s (1.25x) on 2x RTX 5000 Ada, with a head that adds 181 MiB to the model
-file instead of 810 MiB.
+file instead of 810 MiB. Adding the engine's lookup drafter on top takes copy-heavy edits to about
+82 tok/s (2.3x) at almost no cost on ordinary prompts.
 
 No model weights and no datasets are included. Everything here is code, a small engine patch, the
 hand-written prompt tasks used for the first smoke test, and result logs.
@@ -135,6 +136,47 @@ With the longer run the ternary head reaches the float head's acceptance, and 2 
 - **The trunk's hidden states are in a different basis from the stock model's.** A head fine-tuned
   against the stock embedding and output matrices scores 0.0% against the ternary file's own matrices
   until retrained.
+
+### 6. Lookup drafting on top of the head (day 3)
+
+The engine's n-gram drafters propose tokens by matching text already in the context, at no cost to
+produce. Because a verify call of more than 8 tokens costs a flat ~258 ms on this engine (see
+`results/verify-cost.md`), a long accepted lookup draft is very cheap per token. Ternary rank-4096
+head, 12 general prompts and 6 copy-heavy edits ("add type hints and return the whole file",
+"change two settings in this config", and similar), tok/s:
+
+| Configuration | General prompts | Copy-heavy edits |
+| :--- | ---: | ---: |
+| Plain decoding | 35.7 | 35.4 |
+| MTP head, 1 draft | 44.1 | 46.5 |
+| `ngram-mod` alone | 35.4 | 78.3 |
+| `ngram-simple`, 48-token drafts, alone | 31.3 | 75.4 |
+| MTP head + `ngram-simple`, 48-token drafts | 36.2 | 79.5 |
+| **MTP head + `ngram-mod`** (`--spec-type draft-mtp,ngram-mod`) | **43.0** | **81.6** |
+
+- The two drafters cover different cases: the head gives the gain on ordinary generation, lookup gives
+  the gain where the answer repeats the prompt. Together: 1.2x on general prompts and 2.3x on edits,
+  with single edits between 67 and 134 tok/s.
+- Fixed 48-token lookup drafts hurt general prompts; `ngram-mod` only drafts when it has a long match.
+- `ngram-simple` with 3- or 7-token drafts never produced a draft in these runs, so short lookup drafts
+  remain untested.
+- A trunk file with an in-file head only loads when `--spec-type` includes `draft-mtp`; without it the
+  loader rejects the extra tensors ("wrong number of tensors"). The baselines above use the plain trunk file.
+
+### 7. Does more data still help?
+
+The float head trained for the same 1,500 steps on fractions of the day-2 data, same held-out set:
+
+| Training data | Generated tokens | Held-out agreement | Final training loss |
+| :--- | ---: | ---: | ---: |
+| 12.5% | 0.40M | 62.6% | 0.80 |
+| 25% | 0.77M | 65.5% | 0.91 |
+| 50% | 1.54M | 68.5% | 1.06 |
+| 100% | 3.16M | 70.3% | 1.32 |
+
+About 3 points per doubling, with the last step smaller. The full-data run is also the one most short
+of training steps (highest training loss), so the head is still data-limited at 3M tokens. At one
+draft, though, a few more points of acceptance are worth only 1–3 tok/s on this engine.
 
 Raw logs for all of the above are in `results/`.
 

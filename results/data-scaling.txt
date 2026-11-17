@@ -1,0 +1,60 @@
+== scale-0.125
+sequences: train 736 (761727 positions, 398800 generated), held-out 150 (97 conversations)
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 52.1% trunk-prob 0.486 | all positions 52.4% 0.457
+eval step 200: generated positions n 75953 top-1 agreement 55.4% trunk-prob 0.515 | all positions 55.3% 0.480
+eval step 300: generated positions n 75953 top-1 agreement 56.0% trunk-prob 0.521 | all positions 55.8% 0.486
+eval step 400: generated positions n 75953 top-1 agreement 58.4% trunk-prob 0.542 | all positions 58.8% 0.508
+eval step 500: generated positions n 75953 top-1 agreement 58.2% trunk-prob 0.538 | all positions 58.8% 0.505
+eval step 600: generated positions n 75953 top-1 agreement 59.2% trunk-prob 0.548 | all positions 59.4% 0.512
+eval step 700: generated positions n 75953 top-1 agreement 59.9% trunk-prob 0.554 | all positions 59.3% 0.515
+eval step 800: generated positions n 75953 top-1 agreement 60.4% trunk-prob 0.558 | all positions 61.0% 0.521
+eval step 900: generated positions n 75953 top-1 agreement 61.7% trunk-prob 0.569 | all positions 61.8% 0.528
+eval step 1000: generated positions n 75953 top-1 agreement 62.2% trunk-prob 0.571 | all positions 62.1% 0.531
+eval step 1100: generated positions n 75953 top-1 agreement 62.1% trunk-prob 0.571 | all positions 62.9% 0.533
+eval step 1200: generated positions n 75953 top-1 agreement 62.7% trunk-prob 0.575 | all positions 63.4% 0.535
+eval step 1300: generated positions n 75953 top-1 agreement 62.8% trunk-prob 0.575 | all positions 63.5% 0.535
+eval step 1400: generated positions n 75953 top-1 agreement 62.7% trunk-prob 0.575 | all positions 63.4% 0.535
+eval step 1500: generated positions n 75953 top-1 agreement 62.6% trunk-prob 0.574 | all positions 63.4% 0.535
+done. best held-out score 62.8%
+step 1500/1500 loss 0.8018 grad 0.26 lr 5.00e-06 1471s mem 16.9G
+== scale-0.25
+sequences: train 1473 (1509766 positions, 765520 generated), held-out 150 (97 conversations)
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 50.4% trunk-prob 0.470 | all positions 50.9% 0.443
+eval step 200: generated positions n 75953 top-1 agreement 54.7% trunk-prob 0.509 | all positions 55.0% 0.477
+eval step 300: generated positions n 75953 top-1 agreement 56.9% trunk-prob 0.528 | all positions 56.9% 0.492
+eval step 400: generated positions n 75953 top-1 agreement 59.3% trunk-prob 0.548 | all positions 58.9% 0.508
+eval step 500: generated positions n 75953 top-1 agreement 58.9% trunk-prob 0.544 | all positions 59.3% 0.509
+eval step 600: generated positions n 75953 top-1 agreement 60.8% trunk-prob 0.562 | all positions 60.2% 0.520
+eval step 700: generated positions n 75953 top-1 agreement 62.0% trunk-prob 0.572 | all positions 61.8% 0.532
+eval step 800: generated positions n 75953 top-1 agreement 63.3% trunk-prob 0.582 | all positions 62.8% 0.537
+eval step 900: generated positions n 75953 top-1 agreement 63.8% trunk-prob 0.588 | all positions 63.9% 0.543
+eval step 1000: generated positions n 75953 top-1 agreement 64.6% trunk-prob 0.593 | all positions 64.1% 0.546
+eval step 1100: generated positions n 75953 top-1 agreement 64.9% trunk-prob 0.595 | all positions 64.7% 0.549
+eval step 1200: generated positions n 75953 top-1 agreement 65.2% trunk-prob 0.597 | all positions 65.3% 0.552
+eval step 1300: generated positions n 75953 top-1 agreement 65.5% trunk-prob 0.600 | all positions 65.4% 0.553
+eval step 1400: generated positions n 75953 top-1 agreement 65.6% trunk-prob 0.600 | all positions 65.5% 0.553
+eval step 1500: generated positions n 75953 top-1 agreement 65.5% trunk-prob 0.599 | all positions 65.5% 0.553
+done. best held-out score 65.6%
+step 1500/1500 loss 0.9119 grad 0.63 lr 5.00e-06 1464s mem 16.9G
+== scale-0.5
+sequences: train 2995 (3142004 positions, 1538536 generated), held-out 150 (97 conversations)
+eval step 0: generated positions n 75953 top-1 agreement 49.6% trunk-prob 0.459 | all positions 49.9% 0.428
+eval step 100: generated positions n 75953 top-1 agreement 51.9% trunk-prob 0.485 | all positions 52.4% 0.458
+eval step 200: generated positions n 75953 top-1 agreement 53.6% trunk-prob 0.500 | all positions 54.0% 0.470
+eval step 300: generated positions n 75953 top-1 agreement 58.0% trunk-prob 0.540 | all positions 57.7% 0.505
+eval step 400: generated positions n 75953 top-1 agreement 60.3% trunk-prob 0.558 | all positions 60.1% 0.519
+eval step 500: generated positions n 75953 top-1 agreement 62.0% trunk-prob 0.573 | all positions 60.9% 0.525
+eval step 600: generated positions n 75953 top-1 agreement 63.0% trunk-prob 0.580 | all positions 61.7% 0.532
+eval step 700: generated positions n 75953 top-1 agreement 63.8% trunk-prob 0.588 | all positions 63.2% 0.542
+eval step 800: generated positions n 75953 top-1 agreement 65.2% trunk-prob 0.600 | all positions 63.9% 0.549
+eval step 900: generated positions n 75953 top-1 agreement 65.9% trunk-prob 0.605 | all positions 65.1% 0.556
+eval step 1000: generated positions n 75953 top-1 agreement 66.5% trunk-prob 0.610 | all positions 65.4% 0.559
+eval step 1100: generated positions n 75953 top-1 agreement 67.5% trunk-prob 0.617 | all positions 66.9% 0.567
+eval step 1200: generated positions n 75953 top-1 agreement 68.0% trunk-prob 0.622 | all positions 67.4% 0.570
+eval step 1300: generated positions n 75953 top-1 agreement 68.2% trunk-prob 0.623 | all positions 67.6% 0.571
+eval step 1400: generated positions n 75953 top-1 agreement 68.4% trunk-prob 0.624 | all positions 67.9% 0.573
+eval step 1500: generated positions n 75953 top-1 agreement 68.5% trunk-prob 0.625 | all positions 68.1% 0.573
+done. best held-out score 68.5%
+step 1500/1500 loss 1.0629 grad 1.36 lr 5.00e-06 1523s mem 16.9G
