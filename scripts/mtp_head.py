@@ -120,7 +120,7 @@ class MTPHead(nn.Module):
         Step 1 at p: input (tok[p], h[p-1]), attends step-1 keys of positions <= p.
         Step 2 at p: input (tok[p], g1[p-1]), attends step-1 keys of positions < p and its own.
         Step 3 at p: input (tok[p], g2[p-1]), attends step-1 keys < p-1, the step-2 key at p-1, its own.
-        Every output predicts tok[p+1]; step s is meaningful for p >= s."""
+        Deeper steps follow the same rule. Every output predicts tok[p+1]; step s is meaningful for p >= s."""
         B, T = tok.shape
         pos = torch.arange(T, device=tok.device) if pos is None else pos
         e = self.embed(tok)
@@ -130,28 +130,35 @@ class MTPHead(nn.Module):
         shift = lambda x: torch.cat([torch.zeros_like(x[:, :1]), x[:, :-1]], dim=1)          # along T of [B, T, ...]
         shift_h = lambda x: torch.cat([torch.zeros_like(x[:, :, :1]), x[:, :, :-1]], dim=2)   # along T of [B, H, T, HD]
 
-        zA = self._inp(e, shift(h))
-        qA, kA, vA, gateA = self._qkv(zA, pos)
-        S = (qA @ kA.transpose(-1, -2)) * sc
-        oA = torch.softmax(S.masked_fill(idx[None, :] > idx[:, None], ninf), -1) @ vA
-        outs = [self._post(zA, oA, gateA)]
-        if steps >= 2:
-            g = outs[0].detach() if detach else outs[0]
-            zB = self._inp(e, shift(g).to(e.dtype))
-            qB, kB, vB, gateB = self._qkv(zB, pos)
-            S = ((qB @ kA.transpose(-1, -2)) * sc).masked_fill(idx[None, :] >= idx[:, None], ninf)
-            P = torch.softmax(torch.cat([S, (qB * kB).sum(-1, keepdim=True) * sc], -1), -1)
-            oB = P[..., :T] @ vA + P[..., T:] * vB
-            outs.append(self._post(zB, oB, gateB))
-        if steps >= 3:
-            g = outs[1].detach() if detach else outs[1]
-            zC = self._inp(e, shift(g).to(e.dtype))
-            qC, kC, vC, gateC = self._qkv(zC, pos)
-            S = ((qC @ kA.transpose(-1, -2)) * sc).masked_fill(idx[None, :] >= idx[:, None] - 1, ninf)
-            dB = ((qC * shift_h(kB)).sum(-1, keepdim=True) * sc).masked_fill((idx == 0)[None, None, :, None], ninf)
-            P = torch.softmax(torch.cat([S, dB, (qC * kC).sum(-1, keepdim=True) * sc], -1), -1)
-            oC = P[..., :T] @ vA + P[..., T:T + 1] * shift_h(vB) + P[..., T + 1:] * vC
-            outs.append(self._post(zC, oC, gateC))
+        # step 1: ordinary causal attention over the step-1 keys
+        z = self._inp(e, shift(h))
+        q, k, v, gate = self._qkv(z, pos)
+        ks, vs = [k], [v]                                   # keys / values of steps 1..s
+        S = (q @ k.transpose(-1, -2)) * sc
+        o = torch.softmax(S.masked_fill(idx[None, :] > idx[:, None], ninf), -1) @ v
+        outs = [self._post(z, o, gate)]
+        # step s >= 2 at position p: step-1 keys for positions <= p-(s-1), then the step s-m key at p-m
+        # for m = s-2 .. 0 (the draft region written by the earlier steps of this cycle, then its own)
+        for s_ in range(2, steps + 1):
+            g = outs[-1].detach() if detach else outs[-1]
+            z = self._inp(e, shift(g).to(e.dtype))
+            q, k, v, gate = self._qkv(z, pos)
+            ks.append(k); vs.append(v)
+            S = ((q @ ks[0].transpose(-1, -2)) * sc).masked_fill(idx[None, :] > idx[:, None] - (s_ - 1), ninf)
+            diag, vals = [], []
+            for m in range(s_ - 2, -1, -1):
+                km, vm = ks[s_ - m - 1], vs[s_ - m - 1]
+                for _ in range(m):
+                    km, vm = shift_h(km), shift_h(vm)
+                d = (q * km).sum(-1, keepdim=True) * sc
+                if m:
+                    d = d.masked_fill((idx < m)[None, None, :, None], ninf)
+                diag.append(d); vals.append(vm)
+            P = torch.softmax(torch.cat([S] + diag, -1), -1)
+            o = P[..., :T] @ ks[0].new_zeros(()).add(vs[0])
+            for i, vm in enumerate(vals):
+                o = o + P[..., T + i:T + i + 1] * vm
+            outs.append(self._post(z, o, gate))
         return outs
 
     def prepare(self):      # hooks for heads that cache per-step weights (ternary head)

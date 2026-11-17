@@ -220,6 +220,17 @@ Engine, tok/s (12 general prompts / 6 copy-heavy edits):
 - The "original" columns for the head use 1,600-step multi-draft training and the 1-draft lookup
   combination from section 6; "n/a" means that combination was not run.
 
+### 9. Where the limits are now
+
+- **Three drafts is the sweet spot.** Four to eight drafts are slower (46.6 tok/s at 4, 9.1 at 8), because
+  later drafts are rarely reached and the fast kernel takes at most 4 tokens per call.
+- **Training the head deeper does not change that.** Positions 4 and 5 score about 40% untrained and 41–43%
+  after 5-deep training.
+- **Confidence-gated drafting is slower on this engine,** because a varying draft count forces a graph
+  rebuild of about 12.6 ms on most cycles.
+
+Details: `results/deep-drafting.md`.
+
 Raw logs for all of the above are in `results/`.
 
 ## How it works

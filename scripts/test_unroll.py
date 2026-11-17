@@ -23,17 +23,19 @@ T = tok.shape[1]
 pos = torch.arange(T, device=tok.device)
 shift = lambda x: torch.cat([torch.zeros_like(x[:, :1]), x[:, :-1]], 1)
 with torch.no_grad():
-    g1, g2, g3 = model.unroll(tok, h, 3)
-    print("step 1 vs forward(): max abs diff %.2e" % (g1 - model(tok, h)).abs().max().item())
+    N = 5
+    gs = model.unroll(tok, h, N)
+    print("step 1 vs forward(): max abs diff %.2e" % (gs[0] - model(tok, h)).abs().max().item())
     e = model.embed(tok)
     head = lambda z: rms_norm(model.layer(z, pos[:z.shape[1]]), model.norms["nextn_shared_head_norm"])
-    zA, zB, zC = model._inp(e, shift(h)), model._inp(e, shift(g1)), model._inp(e, shift(g2))
-    d2 = d3 = 0.0
-    for q in (2, 3, 7, 20, 50, T - 1):
-        ref2 = head(torch.cat([zA[:, :q], zB[:, q:q + 1]], 1))[0, -1]
-        ref3 = head(torch.cat([zA[:, :q - 1], zB[:, q - 1:q], zC[:, q:q + 1]], 1))[0, -1]
-        d2 = max(d2, (ref2 - g2[0, q]).abs().max().item()); d3 = max(d3, (ref3 - g3[0, q]).abs().max().item())
-    print("step 2 vs reference: max abs diff %.2e" % d2)
-    print("step 3 vs reference: max abs diff %.2e" % d3)
-    print("typical |g|: %.2f" % g1.abs().mean().item())
-    print("UNROLL_OK" if max(d2, d3) < 1e-2 else "UNROLL_MISMATCH")
+    zs = [model._inp(e, shift(h))] + [model._inp(e, shift(g)) for g in gs[:-1]]      # inputs of steps 1..N
+    worst = 0.0
+    for s_ in range(2, N + 1):
+        dmax = 0.0
+        for q in (s_, s_ + 1, 9, 20, 50, T - 1):
+            # positions < q-(s-2) from step 1, then one position from each of steps 2..s
+            parts = [zs[0][:, :q - s_ + 2]] + [zs[j][:, q - s_ + 1 + j:q - s_ + 2 + j] for j in range(1, s_)]
+            ref = head(torch.cat(parts, 1))[0, -1]
+            dmax = max(dmax, (ref - gs[s_ - 1][0, q]).abs().max().item())
+        print("step %d vs reference: max abs diff %.2e" % (s_, dmax)); worst = max(worst, dmax)
+    print("UNROLL_OK" if worst < 1e-2 else "UNROLL_MISMATCH")

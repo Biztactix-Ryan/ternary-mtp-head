@@ -1,0 +1,29 @@
+== deeper drafting, re-packed model 2026-11-17 04:12:48
+-- general prompts (12)
+n4 TOTAL: 46.6 tok/s over 3703 tokens, drafts accepted 2222/5855 (38.0%)
+n5 TOTAL: 41.6 tok/s over 3703 tokens, drafts accepted 2258/7128 (31.7%)
+n6 TOTAL: 36.9 tok/s over 3703 tokens, drafts accepted 2272/8457 (26.9%)
+n8 TOTAL: 9.1 tok/s over 3699 tokens, drafts accepted 2300/10994 (20.9%)
+n3-pmin0.5 TOTAL: 37.3 tok/s over 3788 tokens, drafts accepted 2030/2862 (70.9%)
+n6-pmin0.5 TOTAL: 35.6 tok/s over 3732 tokens, drafts accepted 2093/3415 (61.3%)
+n6-pmin0.7 TOTAL: 33.8 tok/s over 3727 tokens, drafts accepted 1799/2250 (80.0%)
+n8-pmin0.8 TOTAL: 34.8 tok/s over 3715 tokens, drafts accepted 1720/1983 (86.7%)
+-- copy-heavy edits (6)
+n4 COPY-TOTAL: 48.4 tok/s over 2842 tokens, drafts accepted 1767/4284 (41.2%)
+n5 COPY-TOTAL: 42.9 tok/s over 2842 tokens, drafts accepted 1776/5300 (33.5%)
+n6 COPY-TOTAL: 37.7 tok/s over 2842 tokens, drafts accepted 1778/6348 (28.0%)
+n8 COPY-TOTAL: 9.0 tok/s over 2842 tokens, drafts accepted 1776/8480 (20.9%)
+n3-pmin0.5 COPY-TOTAL: 42.5 tok/s over 2842 tokens, drafts accepted 1697/2348 (72.3%)
+n6-pmin0.5 COPY-TOTAL: 35.7 tok/s over 2842 tokens, drafts accepted 1725/2826 (61.0%)
+n6-pmin0.7 COPY-TOTAL: 36.5 tok/s over 2842 tokens, drafts accepted 1638/2097 (78.1%)
+n8-pmin0.8 COPY-TOTAL: 40.1 tok/s over 2842 tokens, drafts accepted 1598/1885 (84.8%)
+
+eval step 0: generated positions n 75953 top-1 agreement 69.8% trunk-prob 0.639 | all positions 68.7% 0.583 | draft 2: 54.6% | draft 3: 46.8% | draft 4: 41.3% | draft 5: 38.1%
+eval step 100: generated positions n 75953 top-1 agreement 67.4% trunk-prob 0.619 | all positions 65.9% 0.567 | draft 2: 49.2% | draft 3: 40.5% | draft 4: 36.0% | draft 5: 33.7%
+eval step 200: generated positions n 75953 top-1 agreement 67.5% trunk-prob 0.620 | all positions 66.1% 0.567 | draft 2: 49.5% | draft 3: 41.0% | draft 4: 36.7% | draft 5: 34.4%
+eval step 300: generated positions n 75953 top-1 agreement 68.1% trunk-prob 0.625 | all positions 67.2% 0.573 | draft 2: 51.7% | draft 3: 44.0% | draft 4: 40.4% | draft 5: 38.1%
+eval step 400: generated positions n 75953 top-1 agreement 68.9% trunk-prob 0.631 | all positions 68.0% 0.578 | draft 2: 53.4% | draft 3: 46.2% | draft 4: 42.4% | draft 5: 40.2%
+eval step 500: generated positions n 75953 top-1 agreement 69.2% trunk-prob 0.634 | all positions 68.4% 0.580 | draft 2: 54.1% | draft 3: 47.0% | draft 4: 43.2% | draft 5: 41.0%
+deep5-n3 TOTAL: 56.4 tok/s over 3704 tokens, drafts accepted 2170/4555 (47.6%)
+deep5-n4 TOTAL: 46.0 tok/s over 3703 tokens, drafts accepted 2223/5848 (38.0%)
+deep5-n5 TOTAL: 42.2 tok/s over 3703 tokens, drafts accepted 2262/7113 (31.8%)
