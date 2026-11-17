@@ -1,0 +1,115 @@
+== stock DSpark 2026-11-17 11:31:58
+ttf-dspark7 TOTAL: 14.4 tok/s over 3752 tokens, drafts accepted 43/25689 (0.2%)
+ttf-dspark7 COPY-TOTAL: 14.3 tok/s over 2842 tokens, drafts accepted 10/19782 (0.1%)
+ttf-dspark3 TOTAL: 22.8 tok/s over 3659 tokens, drafts accepted 35/10794 (0.3%)
+ttf-dspark3 COPY-TOTAL: 22.3 tok/s over 2842 tokens, drafts accepted 12/8472 (0.1%)
+q4-plain TOTAL: 28.7 tok/s over 3536 tokens, drafts accepted n/a
+q4-plain COPY-TOTAL: 28.6 tok/s over 3042 tokens, drafts accepted n/a
+q4-dspark7 TOTAL: 62.8 tok/s over 3575 tokens, drafts accepted 2585/6785 (38.1%)
+q4-dspark7 COPY-TOTAL: 120.6 tok/s over 3081 tokens, drafts accepted 2657/2926 (90.8%)
+q4-dspark3 TOTAL: 56.1 tok/s over 3598 tokens, drafts accepted 2320/3785 (61.3%)
+q4-dspark3 COPY-TOTAL: 75.2 tok/s over 3077 tokens, drafts accepted 2283/2370 (96.3%)
+q4-dspark7-p0.5 TOTAL: 55.9 tok/s over 3571 tokens, drafts accepted 2451/3614 (67.8%)
+q4-dspark7-p0.5 COPY-TOTAL: 117.7 tok/s over 3081 tokens, drafts accepted 2653/2831 (93.7%)
+DSPARK_BASE_DONE
+
+== 8-token table kernel (llama-bench, tok/s by call size) and exports
+== table kernel, 5-8 tokens: new
+             pp4 |       117.95 ± 26.87 |
+             pp5 |       144.74 ± 18.84 |
+             pp6 |       165.97 ± 20.50 |
+             pp7 |       175.38 ± 28.90 |
+             pp8 |       191.61 ± 17.47 |
+             pp9 |       158.17 ± 29.93 |
+== old limit (GGML_CUDA_TQ1P_COLS4=1)
+             pp4 |       119.02 ± 26.20 |
+             pp5 |       119.58 ± 18.98 |
+             pp6 |        130.78 ± 8.57 |
+             pp7 |       134.05 ± 10.58 |
+             pp8 |       143.59 ± 11.06 |
+             pp9 |       158.16 ± 29.94 |
+== new kernel vs old path
+26 prompts of 5-8 tokens: same top token 26/26, log-prob difference mean 0.00000 max 0.00000
+== old path vs itself
+26 prompts of 5-8 tokens: same top token 26/26, log-prob difference mean 0.00000 max 0.00000
+wrote out/dspark-F-b7.gguf: 0M ternary weights, 1857M float weights, 5230 MiB
+wrote out/dspark-F-b16.gguf: 0M ternary weights, 1857M float weights, 5230 MiB
+
+== drafters on the re-packed ternary model (engine)
+aligned-b7-n7 TOTAL: 50.1 tok/s over 3752 tokens, drafts accepted 2691/7306 (36.8%)
+aligned-b7-n7 COPY-TOTAL: 103.0 tok/s over 2842 tokens, drafts accepted 2466/2597 (95.0%)
+aligned-b16-n15 TOTAL: 47.1 tok/s over 3767 tokens, drafts accepted 2773/14573 (19.0%)
+aligned-b16-n15 COPY-TOTAL: 148.4 tok/s over 2842 tokens, drafts accepted 2615/3315 (78.9%)
+-- window 14:22:13
+aligned-b7-n7-cols8 TOTAL: 58.1 tok/s over 3761 tokens, drafts accepted 2657/7587 (35.0%)
+aligned-b7-n7-cols8 COPY-TOTAL: 123.5 tok/s over 2842 tokens, drafts accepted 2465/2604 (94.7%)
+F-b7-n7 TOTAL: 60.5 tok/s over 3761 tokens, drafts accepted 2694/7326 (36.8%)
+F-b7-n7 COPY-TOTAL: 125.4 tok/s over 2842 tokens, drafts accepted 2466/2590 (95.2%)
+F-b16-n15 TOTAL: 49.0 tok/s over 3767 tokens, drafts accepted 2794/14231 (19.6%)
+F-b16-n15 COPY-TOTAL: 151.3 tok/s over 2842 tokens, drafts accepted 2619/3255 (80.5%)
+-- final 17:26:33
+G-b7-n7 TOTAL: 54.2 tok/s over 3761 tokens, drafts accepted 2523/8517 (29.6%)
+H-b7-n7 TOTAL: 55.0 tok/s over 3761 tokens, drafts accepted 2532/8465 (29.9%)
+G-b7-n7 COPY-TOTAL: 115.6 tok/s over 2842 tokens, drafts accepted 2416/2940 (82.2%)
+H-b7-n7 COPY-TOTAL: 118.7 tok/s over 2842 tokens, drafts accepted 2432/2828 (86.0%)
+G-b16-n15 TOTAL: 36.4 tok/s over 3767 tokens, drafts accepted 2577/17441 (14.8%)
+H-b16-n15 TOTAL: 36.8 tok/s over 3767 tokens, drafts accepted 2589/17266 (15.0%)
+H-b16-n15 COPY-TOTAL: 101.4 tok/s over 2842 tokens, drafts accepted 2531/4575 (55.3%)
+G-b16-n15 COPY-TOTAL: 96.1 tok/s over 2842 tokens, drafts accepted 2514/4830 (52.0%)
+H-b7-n7-ngram TOTAL: 53.9 tok/s over 3761 tokens, drafts accepted 2532/8465 (29.9%)
+G-b7-n7-ngram TOTAL: 53.5 tok/s over 3761 tokens, drafts accepted 2523/8517 (29.6%)
+H-b7-n7-ngram COPY-TOTAL: 180.2 tok/s over 2842 tokens, drafts accepted 2696/3511 (76.8%)
+G-b7-n7-ngram COPY-TOTAL: 183.1 tok/s over 2842 tokens, drafts accepted 2698/3326 (81.1%)
+H-b7-n5 TOTAL: 60.0 tok/s over 3761 tokens, drafts accepted 2472/6350 (38.9%)
+G-b7-n5 TOTAL: 60.4 tok/s over 3761 tokens, drafts accepted 2449/6464 (37.9%)
+H-b7-n5 COPY-TOTAL: 111.2 tok/s over 2842 tokens, drafts accepted 2333/2525 (92.4%)
+G-b7-n5 COPY-TOTAL: 113.2 tok/s over 2842 tokens, drafts accepted 2332/2525 (92.4%)
+-- io-final 18:44:47
+J-b7-n5 TOTAL: 60.4 tok/s over 3761 tokens, drafts accepted 2451/6448 (38.0%)
+I-b7-n5 TOTAL: 60.6 tok/s over 3761 tokens, drafts accepted 2437/6513 (37.4%)
+J-b7-n5 COPY-TOTAL: 111.5 tok/s over 2842 tokens, drafts accepted 2325/2560 (90.8%)
+I-b7-n5 COPY-TOTAL: 112.4 tok/s over 2842 tokens, drafts accepted 2320/2580 (89.9%)
+J-b7-n7 TOTAL: 52.6 tok/s over 3761 tokens, drafts accepted 2510/8601 (29.2%)
+I-b7-n7 TOTAL: 52.9 tok/s over 3761 tokens, drafts accepted 2507/8614 (29.1%)
+J-b7-n7 COPY-TOTAL: 111.0 tok/s over 2842 tokens, drafts accepted 2411/2975 (81.0%)
+I-b7-n7 COPY-TOTAL: 112.7 tok/s over 2842 tokens, drafts accepted 2413/2968 (81.3%)
+J-b7-n5-ngram TOTAL: 59.6 tok/s over 3761 tokens, drafts accepted 2450/6491 (37.7%)
+J-b7-n5-ngram COPY-TOTAL: 175.9 tok/s over 2842 tokens, drafts accepted 2678/3439 (77.9%)
+I-b7-n5-ngram TOTAL: 60.2 tok/s over 3761 tokens, drafts accepted 2437/6513 (37.4%)
+I-b7-n5-ngram COPY-TOTAL: 176.2 tok/s over 2842 tokens, drafts accepted 2675/3454 (77.4%)
+
+== held-out evaluation at end of training (per-row agreement, accepted drafts per 7 / 15 block)
+run F
+step 0 {"row": [0.8048, 0.7239, 0.6661, 0.6229, 0.5779, 0.5391, 0.5179, 0.4919, 0.4705, 0.4523, 0.4324, 0.411, 0.381, 0.3879, 0.3646, 0.3442], "accept7": 3.1222444889779557, "accept15": 4.02051571616789, "blocks": 5489}
+final step 6903 {"row": [0.8251, 0.7554, 0.697, 0.651, 0.5995, 0.571, 0.5478, 0.5209, 0.489, 0.4771, 0.4533, 0.4331, 0.4067, 0.4108, 0.3904, 0.3713], "accept7": 3.368008744762252, "accept15": 4.445511010728402, "blocks": 5489}
+run G
+step 0 {"row": [0.6711, 0.5766, 0.4816, 0.4312, 0.379, 0.3452, 0.3265, 0.2969, 0.2798, 0.2694, 0.2612, 0.2527, 0.236, 0.2427, 0.2279, 0.2227], "accept7": 1.7611586809983604, "accept15": 1.8010540184453228, "blocks": 5489}
+final step 17061 {"row": [0.7773, 0.7011, 0.6353, 0.5875, 0.5334, 0.5044, 0.4728, 0.4436, 0.4105, 0.4023, 0.3792, 0.3585, 0.3428, 0.3416, 0.3271, 0.3095], "accept7": 2.87830205866278, "accept15": 3.453416149068323, "blocks": 5489}
+run H
+step 0 {"row": [0.6933, 0.6046, 0.5257, 0.4804, 0.4315, 0.39, 0.3691, 0.3428, 0.3145, 0.312, 0.2995, 0.2817, 0.2624, 0.2684, 0.2614, 0.2395], "accept7": 1.9610129349608307, "accept15": 2.0604178430265385, "blocks": 5489}
+final step 10883 {"row": [0.7803, 0.6988, 0.6351, 0.5899, 0.5406, 0.5017, 0.4804, 0.4542, 0.4299, 0.4097, 0.389, 0.3765, 0.35, 0.3534, 0.3316, 0.3159], "accept7": 2.8828566223355803, "accept15": 3.4569922830792397, "blocks": 5489}
+run I
+step 0 {"row": [0.7156, 0.647, 0.5907, 0.5404, 0.4971, 0.4694, 0.4365, 0.4155, 0.3872, 0.3656, 0.349, 0.3322, 0.3105, 0.313, 0.2855, 0.2856], "accept7": 2.489888868646384, "accept15": 2.9523809523809526, "blocks": 5489}
+final step 4056 {"row": [0.7719, 0.6929, 0.6242, 0.5785, 0.5323, 0.4921, 0.4658, 0.4383, 0.4094, 0.3981, 0.3816, 0.3605, 0.3383, 0.3411, 0.3168, 0.3017], "accept7": 2.813262889415194, "accept15": 3.3722943722943723, "blocks": 5489}
+run J
+step 0 {"row": [0.7252, 0.6533, 0.5948, 0.5485, 0.5047, 0.4749, 0.4394, 0.4157, 0.387, 0.3655, 0.3507, 0.3309, 0.3116, 0.3139, 0.2872, 0.2836], "accept7": 2.5368919657496813, "accept15": 3.0090344438170527, "blocks": 5489}
+final step 4065 {"row": [0.7757, 0.6918, 0.6263, 0.582, 0.5345, 0.4916, 0.4686, 0.4424, 0.4086, 0.397, 0.3775, 0.3633, 0.3409, 0.3429, 0.3179, 0.3051], "accept7": 2.823647294589178, "accept15": 3.3664596273291925, "blocks": 5489}
+
+== run G with ternarised output head / embeddings, no retraining
+tern-io='out'
+{"row": [0.7252, 0.6533, 0.5948, 0.5485, 0.5047, 0.4749, 0.4394, 0.4157, 0.387, 0.3655, 0.3507, 0.3309, 0.3116, 0.3139, 0.2872, 0.2836], "accept7": 2.5368919657496813, "accept15": 3.0090344438170527, "blocks": 5489}
+tern-io='both'
+{"row": [0.7156, 0.647, 0.5907, 0.5404, 0.4971, 0.4694, 0.4365, 0.4155, 0.3872, 0.3656, 0.349, 0.3322, 0.3105, 0.313, 0.2855, 0.2856], "accept7": 2.489888868646384, "accept15": 2.9523809523809526, "blocks": 5489}
+
+wrote out/dspark-J-b7.gguf: 1794M ternary weights, 64M float weights, 1431 MiB
+wrote out/dspark-I-b7.gguf: 1794M ternary weights, 64M float weights, 1004 MiB
+5483895616 out/dspark-F-b16.gguf
+5483895616 out/dspark-F-b7.gguf
+2274817856 out/dspark-G-b16.gguf
+2274817856 out/dspark-G-b7.gguf
+2342321600 out/dspark-H-b16.gguf
+2342321600 out/dspark-H-b7.gguf
+1053083456 out/dspark-I-b7.gguf
+1500059456 out/dspark-J-b7.gguf
+5483895616 out/dspark-aligned-b16.gguf
+5483895616 out/dspark-aligned-b7.gguf

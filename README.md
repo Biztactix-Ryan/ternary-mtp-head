@@ -21,6 +21,9 @@ Result: draft acceptance at one draft went from 2–10% (stock head) to about 75
 (section 8), decoding goes from 35.7 to about 55 tok/s (1.5x) on general prompts and to about 84 tok/s
 (2.4x) on copy-heavy edits, on 2x RTX 5000 Ada. The re-pack alone makes plain decoding 11% faster.
 
+Later additions: an engine fix for large batches (section 11) and a fully ternary DSpark parallel
+drafter, 60.6 tok/s on general prompts and 176 tok/s on edits with a 1.0 GB draft file (section 12).
+
 No model weights and no datasets are included. Everything here is code, a small engine patch, the
 hand-written prompt tasks used for the first smoke test, and result logs.
 
@@ -277,6 +280,35 @@ quantised kernel read TQ1_P weights directly.
 
 Details: `results/large-batch.md`.
 
+### 12. A ternary DSpark drafter (day 5)
+
+DSpark is a parallel drafter (five layers reading the target's hidden states, 7 tokens per pass) trained
+for the full-precision model. Stock, on the ternary model, 0.2% of its drafts are accepted.
+
+- **Cause:** the ternary model's embedding and output matrices are unrelated to the full-precision ones
+  (cosine 0.000), and the drafter borrows the target's output head.
+- **Fix:** give the drafter its own embeddings and output head, and fit one linear map from the ternary
+  model's features to the ones the drafter expects. That alone gives control-level acceptance. Then
+  ternarise the drafter and train it.
+
+| Drafter | General | Edits | File |
+| :--- | ---: | ---: | ---: |
+| Plain decoding | 39.5 tok/s | 39.5 tok/s | |
+| In-file MTP head + `ngram-mod` (section 11) | 54.2 | 142.7 | +0.5 GB |
+| Stock DSpark, 7 drafts | 14.4 | 14.3 | 3.7 GB |
+| Aligned float DSpark, 7 drafts | 58.1 | 123.5 | 5.2 GB |
+| Fully ternary DSpark, 5 drafts | 60.6 | 112.4 | 1.0 GB |
+| Fully ternary DSpark + `ngram-mod`, 5 drafts | 60.2 | 176.2 | 1.0 GB |
+
+- **The fully ternary drafter is the fastest setting so far**: 1.53x plain on general prompts, 4.5x on edits.
+- **Ternary costs about 15% of accepted drafts** against a float drafter (2.81 against 3.37 per block),
+  which at 5 drafts does not show in speed.
+- **A second engine patch** (`engine/ttf-table-kernel-8tok.patch`) lets the fast ternary kernel take 5 to 8
+  tokens per call: 21% to 33% faster at those sizes, bit-identical output.
+- **Short training** (8 hours in total), same 24 prompts. No weights are published.
+
+Details: `results/dspark.md`.
+
 Raw logs for all of the above are in `results/`:
 
 | File | What it holds |
@@ -290,6 +322,7 @@ Raw logs for all of the above are in `results/`:
 | `deep-drafting.md`, `deep-drafting-raw.txt` | Section 9 |
 | `validation.md`, `validation-raw.txt` | Section 10 |
 | `large-batch.md`, `large-batch-raw.txt` | Section 11 |
+| `dspark.md`, `dspark-raw.txt` | Section 12 |
 
 ## How it works
 
@@ -336,6 +369,7 @@ Raw logs for all of the above are in `results/`:
 
 - The ternary model, the TTF format and the engine patches: `oguzeldereli/ttf-home`.
 - The stock MTP head and the control model: `unsloth/Qwen3.8-27B-GGUF`.
+- The DSpark drafter (section 12): `RadixArk/Qwen3.8-27B-DSpark`; the DFlash and DSpark drafting support is the engine's.
 - llama.cpp for the engine and its MTP implementation.
 - Training ideas: EAGLE, EAGLE-3 (training-time test), Medusa, SpecForge and TorchSpec.
 - Public prompt sources used to regenerate text (prompts only): `lightseekorg/kimi-mtp-dataset`,

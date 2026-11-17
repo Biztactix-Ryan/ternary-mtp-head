@@ -3,6 +3,8 @@
 //
 // input : JSONL, one sequence per line: {"id": ..., "prompt": ..., "completion": ...}
 // output: <out>/<prefix>-NNNN.{tok.i32,h.f16,topk.i32,topk.f16,index.jsonl}
+//         with --layers a,b,c also aux.f16: per position the inputs of those trunk layers, concatenated
+//         (what a DFlash/DSpark drafter reads; pass the draft's extract ids = its target_layer_ids + 1)
 
 #include "llama.h"
 #include "../../src/llama-ext.h"
@@ -43,7 +45,8 @@ struct shard_writer {
     int         idx = -1;
     int64_t     n   = 0; // positions in the current shard
     int64_t     max_positions;
-    FILE *      f_tok = nullptr, * f_h = nullptr, * f_ti = nullptr, * f_tp = nullptr, * f_idx = nullptr;
+    FILE *      f_tok = nullptr, * f_h = nullptr, * f_ti = nullptr, * f_tp = nullptr, * f_idx = nullptr, * f_aux = nullptr;
+    bool        aux = false;
 
     FILE * open(const char * ext) {
         char name[64];
@@ -57,12 +60,12 @@ struct shard_writer {
         return f;
     }
     void close() {
-        for (FILE * f : { f_tok, f_h, f_ti, f_tp, f_idx }) {
+        for (FILE * f : { f_tok, f_h, f_ti, f_tp, f_idx, f_aux }) {
             if (f) {
                 fclose(f);
             }
         }
-        f_tok = f_h = f_ti = f_tp = f_idx = nullptr;
+        f_tok = f_h = f_ti = f_tp = f_idx = f_aux = nullptr;
     }
     // called at a sequence boundary
     void begin_sequence() {
@@ -75,6 +78,7 @@ struct shard_writer {
             f_ti  = open("topk.i32");
             f_tp  = open("topk.f16");
             f_idx = open("index.jsonl");
+            f_aux = aux ? open("aux.f16") : nullptr;
         }
     }
 };
@@ -85,6 +89,7 @@ int main(int argc, char ** argv) {
     std::string model_path, in_path, out_dir, prefix = "shard";
     int         ngl = 99, n_ctx = 8192, n_batch = 512, top_k = 32, max_prompt_rows = 0;
     int64_t     shard_positions = 100000;
+    std::vector<uint32_t> layers;
 
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
@@ -113,6 +118,16 @@ int main(int argc, char ** argv) {
             top_k = atoi(next());
         } else if (a == "--max-prompt-rows") {
             max_prompt_rows = atoi(next());
+        } else if (a == "--layers") {
+            std::string v = next();
+            for (size_t b = 0; b < v.size();) {
+                size_t e = v.find(',', b);
+                if (e == std::string::npos) {
+                    e = v.size();
+                }
+                layers.push_back((uint32_t) atoi(v.substr(b, e - b).c_str()));
+                b = e + 1;
+            }
         } else if (a == "--shard-positions") {
             shard_positions = atoll(next());
         } else {
@@ -149,6 +164,9 @@ int main(int argc, char ** argv) {
         return 1;
     }
     llama_set_embeddings_nextn(ctx, true, /*masked=*/ false);
+    for (uint32_t lid : layers) {
+        llama_set_embeddings_layer_inp(ctx, lid, true);
+    }
 
     llama_batch_ext * batch = llama_batch_ext_init(ctx);
 
@@ -156,6 +174,8 @@ int main(int argc, char ** argv) {
     w.dir           = out_dir;
     w.prefix        = prefix;
     w.max_positions = shard_positions;
+    w.aux           = !layers.empty();
+    std::vector<ggml_fp16_t> baux;
 
     std::vector<ggml_fp16_t> bh, btp;
     std::vector<int32_t>     bti;
@@ -286,6 +306,21 @@ int main(int argc, char ** argv) {
             fwrite(bh.data(), sizeof(ggml_fp16_t), bh.size(), w.f_h);
             fwrite(bti.data(), sizeof(int32_t), bti.size(), w.f_ti);
             fwrite(btp.data(), sizeof(ggml_fp16_t), btp.size(), w.f_tp);
+            if (!layers.empty()) {
+                const size_t L = layers.size();
+                baux.resize((size_t) nw * L * n_embd);
+                for (size_t k = 0; k < L; k++) {
+                    const float * src = llama_get_embeddings_layer_inp(ctx, layers[k]);
+                    if (!src) {
+                        fprintf(stderr, "layer %u input not extracted (seq %s)\n", layers[k], id.c_str());
+                        return 1;
+                    }
+                    for (int i = i0; i < nb; i++) {
+                        ggml_fp32_to_fp16_row(src + (size_t) i * n_embd, baux.data() + ((size_t) (i - i0) * L + k) * n_embd, n_embd);
+                    }
+                }
+                fwrite(baux.data(), sizeof(ggml_fp16_t), baux.size(), w.f_aux);
+            }
         }
 
         const int n_written = n - keep_from;

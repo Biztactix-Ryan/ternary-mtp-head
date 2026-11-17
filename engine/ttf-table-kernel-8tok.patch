@@ -1,0 +1,158 @@
+--- a/ggml/src/ggml-cuda/mmvq-tq1p.cuh
++++ b/ggml/src/ggml-cuda/mmvq-tq1p.cuh
+@@ -24,6 +24,8 @@
+ // residual add that follows the linear in the graph.
+ 
+ #define TQ1P_ROWS  4
++#define TQ1P_MAX_COLS  8   // tokens per call
++#define TQ1P_COL_CHUNK 4   // columns whose activations are in registers at a time
+ #define TQ1P_WARPS 4
+ 
+ static __device__ __forceinline__ uint32_t tq1p_lut_entry(const uint32_t b) {
+@@ -77,7 +79,7 @@
+ 
+ // per graph node slot: the prologue's arrivals per (linear, token), back to zero by the end of the kernel
+ #define TTF_LIN_SLOTS 8192
+-#define TTF_CNT_STRIDE 16
++#define TTF_CNT_STRIDE (TQ1P_MAX_GROUP*TQ1P_MAX_COLS)
+ static __device__ unsigned int ttf_lin_counters[TTF_LIN_SLOTS*TTF_CNT_STRIDE];
+ 
+ template <int R>
+@@ -143,7 +145,7 @@
+         __threadfence();
+         __shared__ bool last;
+         __syncthreads();
+-        unsigned int * arr = cnt + g*4 + tok;
++        unsigned int * arr = cnt + g*TQ1P_MAX_COLS + tok;
+         if (tid == 0) {
+             last = atomicAdd(arr, 1u) == (unsigned) pg.nchunk - 1;
+         }
+@@ -253,22 +255,6 @@
+     }
+ 
+     for (int kb = lane / 4; active && kb < nb; kb += WARP_SIZE / 4) {
+-        int   u0[ncols_dst][5];
+-        int   u1[ncols_dst][5];
+-        float d [ncols_dst][5];
+-        int   su[ncols_dst][5];   // -sum of the 8 activations this thread holds in q8_1 block n
+-#pragma unroll
+-        for (int j = 0; j < ncols_dst; ++j) {
+-#pragma unroll
+-            for (int n = 0; n < 5; ++n) {
+-                const block_q8_1 * yb = y + j*L.scy + kb*5 + n;
+-                u0[j][n] = get_int_b4(yb->qs, 2*sub);     // q8_1 qs sits at byte 4 of a 36-byte block: 4-byte loads
+-                u1[j][n] = get_int_b4(yb->qs, 2*sub + 1);
+-                d [j][n] = __low2float(yb->ds);
+-                su[j][n] = -ggml_cuda_dp4a(0x01010101, u0[j][n], ggml_cuda_dp4a(0x01010101, u1[j][n], 0));
+-            }
+-        }
+-
+         // all rows' loads first (several in flight per thread); a row past the end re-reads the last row, unused
+         int2 v[TQ1P_ROWS];
+ #pragma unroll
+@@ -276,22 +262,50 @@
+             const int row = min(row0 + r, nrows_x - 1);
+             v[r] = *((const int2 *) x[(int64_t) row*L.stride_w + kb].qs + sub);
+         }
++        int wa0[TQ1P_ROWS], wb0[TQ1P_ROWS], wa1[TQ1P_ROWS], wb1[TQ1P_ROWS];
+ #pragma unroll
+         for (int r = 0; r < TQ1P_ROWS; ++r) {
+-            int wa0, wb0, wa1, wb1;
+-            tq1p_decode(lut, v[r].x, wa0, wb0);
+-            tq1p_decode(lut, v[r].y, wa1, wb1);
++            tq1p_decode(lut, v[r].x, wa0[r], wb0[r]);
++            tq1p_decode(lut, v[r].y, wa1[r], wb1[r]);
++        }
++
++        // the columns in chunks of TQ1P_COL_CHUNK: the decoded weights are reused, the activations of one chunk
++        // (its 5 q8_1 blocks per column) are in registers at a time
+ #pragma unroll
+-            for (int j = 0; j < ncols_dst; ++j) {
+-                float s = 0.0f;
++        for (int j0 = 0; j0 < ncols_dst; j0 += TQ1P_COL_CHUNK) {
++            int   u0[TQ1P_COL_CHUNK][5];
++            int   u1[TQ1P_COL_CHUNK][5];
++            float d [TQ1P_COL_CHUNK][5];
++            int   su[TQ1P_COL_CHUNK][5];   // -sum of the 8 activations this thread holds in q8_1 block n
++#pragma unroll
++            for (int jj = 0; jj < TQ1P_COL_CHUNK; ++jj) {
++                if (j0 + jj < ncols_dst) {
++#pragma unroll
++                    for (int n = 0; n < 5; ++n) {
++                        const block_q8_1 * yb = y + (j0 + jj)*L.scy + kb*5 + n;
++                        u0[jj][n] = get_int_b4(yb->qs, 2*sub);     // q8_1 qs sits at byte 4 of a 36-byte block: 4-byte loads
++                        u1[jj][n] = get_int_b4(yb->qs, 2*sub + 1);
++                        d [jj][n] = __low2float(yb->ds);
++                        su[jj][n] = -ggml_cuda_dp4a(0x01010101, u0[jj][n], ggml_cuda_dp4a(0x01010101, u1[jj][n], 0));
++                    }
++                }
++            }
+ #pragma unroll
+-                for (int n = 0; n < 4; ++n) {
+-                    const int c0 = (wa0 >> (2*n)) & 0x03030303;
+-                    const int c1 = (wa1 >> (2*n)) & 0x03030303;
+-                    s += d[j][n] * (float) ggml_cuda_dp4a(c0, u0[j][n], ggml_cuda_dp4a(c1, u1[j][n], su[j][n]));
++            for (int r = 0; r < TQ1P_ROWS; ++r) {
++#pragma unroll
++                for (int jj = 0; jj < TQ1P_COL_CHUNK; ++jj) {
++                    if (j0 + jj < ncols_dst) {
++                        float s = 0.0f;
++#pragma unroll
++                        for (int n = 0; n < 4; ++n) {
++                            const int c0 = (wa0[r] >> (2*n)) & 0x03030303;
++                            const int c1 = (wa1[r] >> (2*n)) & 0x03030303;
++                            s += d[jj][n] * (float) ggml_cuda_dp4a(c0, u0[jj][n], ggml_cuda_dp4a(c1, u1[jj][n], su[jj][n]));
++                        }
++                        s += d[jj][4] * (float) ggml_cuda_dp4a(wb0[r], u0[jj][4], ggml_cuda_dp4a(wb1[r], u1[jj][4], su[jj][4]));
++                        acc[j0 + jj][r] += s;
++                    }
+                 }
+-                s += d[j][4] * (float) ggml_cuda_dp4a(wb0, u0[j][4], ggml_cuda_dp4a(wb1, u1[j][4], su[j][4]));
+-                acc[j][r] += s;
+             }
+         }
+     }
+@@ -393,6 +407,12 @@
+     }
+ }
+ 
++// GGML_CUDA_TQ1P_COLS4=1: the table kernel takes at most 4 tokens, as before (A/B)
++static int tq1p_max_cols() {
++    static const int v = getenv("GGML_CUDA_TQ1P_COLS4") != nullptr ? 4 : TQ1P_MAX_COLS;
++    return v;
++}
++
+ static int tq1p_blocks(const int N) {
+     return (N + TQ1P_WARPS*TQ1P_ROWS - 1) / (TQ1P_WARPS*TQ1P_ROWS);
+ }
+@@ -405,6 +425,10 @@
+         case 2: mul_mat_vec_tq1_p<2, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
+         case 3: mul_mat_vec_tq1_p<3, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
+         case 4: mul_mat_vec_tq1_p<4, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
++        case 5: mul_mat_vec_tq1_p<5, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
++        case 6: mul_mat_vec_tq1_p<6, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
++        case 7: mul_mat_vec_tq1_p<7, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
++        case 8: mul_mat_vec_tq1_p<8, R, GLU><<<grp.nblocks, block, 0, stream>>>(grp); break;
+         default: GGML_ABORT("tq1p: %d columns", ncols);
+     }
+ }
+@@ -414,7 +438,7 @@
+         const void * vx, const void * vy, float * dst, const ggml_cuda_mm_fusion_args_device & fusion,
+         const int ncols_x, const int nrows_x, const int ncols_dst,
+         const int stride_row_x, const int stride_col_y, const int stride_col_dst, cudaStream_t stream) {
+-    if (ncols_dst < 1 || ncols_dst > 4 || fusion.gate != nullptr || fusion.gate_bias != nullptr ||
++    if (ncols_dst < 1 || ncols_dst > tq1p_max_cols() || fusion.gate != nullptr || fusion.gate_bias != nullptr ||
+             fusion.x_scale != nullptr || fusion.shared_up != nullptr || (ncols_x % QK_TQ1_P) != 0) {
+         return false;
+     }
+--- a/ggml/src/ggml-cuda/mmvq.cu
++++ b/ggml/src/ggml-cuda/mmvq.cu
+@@ -1684,7 +1684,7 @@
+         return v->type == GGML_TYPE_F32 && ggml_is_contiguous(v) && ggml_nelements(v) == n && v->ne[0] == n;
+     };
+     if (W->type != GGML_TYPE_TQ1_P || ggml_n_dims(W) != 2 || K % QK_TQ1_P != 0 || x->ne[0] > K ||
+-            x->type != GGML_TYPE_F32 || x->nb[0] != sizeof(float) || ntok < 1 || ntok > 4 || x->ne[2] != 1 || x->ne[3] != 1 ||
++            x->type != GGML_TYPE_F32 || x->nb[0] != sizeof(float) || ntok < 1 || ntok > tq1p_max_cols() || x->ne[2] != 1 || x->ne[3] != 1 ||
+             !vec(l.c, K) || !vec(l.m, K) || !vec(l.r, N) || (l.b && !vec(l.b, N)) ||
+             l.dst->type != GGML_TYPE_F32 || l.dst->ne[0] != N || l.dst->ne[1] != ntok || l.dst->nb[0] != sizeof(float) ||
+             (l.D == nullptr) != (l.U == nullptr) || N > INT_MAX/2) {
