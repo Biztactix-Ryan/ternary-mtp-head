@@ -16,10 +16,10 @@ the engine patch and the measurements from two days of fixing that:
 3. make the head itself ternary, in the same TTF format the trunk uses, trained quantisation-aware;
 4. train it for multi-token drafting on its own outputs.
 
-Result: draft acceptance at one draft went from 2–10% (stock head) to about 75%, and decoding
-from 35.3 to about 44–45 tok/s (1.25x) on 2x RTX 5000 Ada, with a head that adds 181 MiB to the model
-file instead of 810 MiB. Adding the engine's lookup drafter on top takes copy-heavy edits to about
-82 tok/s (2.3x) at almost no cost on ordinary prompts.
+Result: draft acceptance at one draft went from 2–10% (stock head) to about 75%, with a head that adds
+181 MiB to the model file instead of 810 MiB. Together with re-packing the model's older-layout weights
+(section 8), decoding goes from 35.7 to about 55 tok/s (1.5x) on general prompts and to about 84 tok/s
+(2.4x) on copy-heavy edits, on 2x RTX 5000 Ada. The re-pack alone makes plain decoding 11% faster.
 
 No model weights and no datasets are included. Everything here is code, a small engine patch, the
 hand-written prompt tasks used for the first smoke test, and result logs.
@@ -177,6 +177,48 @@ The float head trained for the same 1,500 steps on fractions of the day-2 data, 
 About 3 points per doubling, with the last step smaller. The full-data run is also the one most short
 of training steps (highest training loss), so the head is still data-limited at 3M tokens. At one
 draft, though, a few more points of acceptance are worth only 1–3 tok/s on this engine.
+
+### 8. Re-packing the old-layout weights: faster for every setting (day 3)
+
+Profiling (`results/verify-cost.md`) showed that the cost of extra tokens in a call sits in one place:
+the 47% of weights still stored as TQ1_0 (the main matrices whose width is not a multiple of 160, and
+all ternary adapters) run through a generic kernel, while the TQ1_P table kernel batches almost for free.
+`scripts/repack_tq1p.py` rewrites those tensors as TQ1_P: same trits, zero-padded to a multiple of 160,
+with the per-block scale moved to a row-scale vector. It needs six lines of engine change
+(`engine/ttf-mtp-head.patch`: two optional row-scale tensors in the loader, a pad in the graph) and no
+kernel changes.
+
+Trunk time per call (ms):
+
+| Tokens per call | Original file | Re-packed |
+| ---: | ---: | ---: |
+| 1 | 27.1 | 25.5 |
+| 2 | 33.2 | 28.3 |
+| 3 | 40.4 | 30.4 |
+| 4 | 47.3 | 31.5 |
+| 8 | 82.5 | 55.1 |
+| 16 | 258.6 | 265.9 |
+
+Engine, tok/s (12 general prompts / 6 copy-heavy edits):
+
+| Configuration | Original: general | Re-packed: general | Original: edits | Re-packed: edits |
+| :--- | ---: | ---: | ---: | ---: |
+| Plain decoding | 35.7 | 39.5 | 35.4 | 39.5 |
+| MTP head, 1 draft | 44.1 | 50.9 | 46.5 | 52.8 |
+| MTP head, 2 drafts | 43.3 | 54.0 | 46.4 | 58.0 |
+| MTP head, 3 drafts | 39.8 | 54.9 | n/a | 57.1 |
+| MTP head (2 drafts) + `ngram-mod` | n/a | 53.9 | n/a | 84.4 |
+| `ngram-mod` alone | 35.4 | 38.6 | 78.3 | 77.4 |
+
+- Plain decoding is 11% faster with no head at all, and multi-draft now pays: 2–3 drafts beat 1.
+- Against the original plain speed, the re-packed model with the head is 1.5x on general prompts and
+  2.4x on copy-heavy edits.
+- Equivalence: on 1,103 positions through the small-batch path the re-packed file gives the same top
+  token as the original on 99.82%; the original against itself at a different batch size gives 99.91%.
+  On 15,409 positions through the prefill path it is 99.64%, with the differences at near-ties.
+- Prefill is slightly slower (841 against 885 tok/s) and calls of more than 8 tokens are unchanged.
+- The "original" columns for the head use 1,600-step multi-draft training and the 1-draft lookup
+  combination from section 6; "n/a" means that combination was not run.
 
 Raw logs for all of the above are in `results/`.
 

@@ -1,0 +1,137 @@
+== re-packed trunk + head 2026-11-17 03:33:58
+converted 12 tensors (0.48 B trits), padded linears 2, 8s
+wrote out/ttf-27b-mtp-tq1p.gguf: 7372 tensors, TQ1_0 tensors left: 0
+7773 MiB  out/trunk-tq1p.gguf
+7951 MiB  out/ttf-27b-mtp-tq1p.gguf
+-- general prompts (12)
+plain TOTAL: 39.5 tok/s over 3738 tokens, drafts accepted n/a
+mtp1 TOTAL: 50.9 tok/s over 3734 tokens, drafts accepted 1586/2136 (74.3%)
+mtp3 TOTAL: 54.9 tok/s over 3704 tokens, drafts accepted 2171/4548 (47.7%)
+mtp2 TOTAL: 54.0 tok/s over 3747 tokens, drafts accepted 2034/3393 (59.9%)
+mtp2+ngram-mod TOTAL: 53.9 tok/s over 3747 tokens, drafts accepted 2034/3393 (59.9%)
+ngram-mod TOTAL: 38.6 tok/s over 3738 tokens, drafts accepted 31/54 (57.4%)
+-- copy-heavy edits (6)
+plain COPY-TOTAL: 39.5 tok/s over 2842 tokens, drafts accepted n/a
+mtp1 COPY-TOTAL: 52.8 tok/s over 2842 tokens, drafts accepted 1315/1524 (86.3%)
+mtp3 COPY-TOTAL: 57.1 tok/s over 2842 tokens, drafts accepted 1740/3291 (52.9%)
+mtp2 COPY-TOTAL: 58.0 tok/s over 2842 tokens, drafts accepted 1635/2408 (67.9%)
+mtp2+ngram-mod COPY-TOTAL: 84.4 tok/s over 2842 tokens, drafts accepted 2575/3352 (76.8%)
+ngram-mod COPY-TOTAL: 77.4 tok/s over 2842 tokens, drafts accepted 2284/3008 (75.9%)
+mtp1 spc_timing: catch-up decode 3702 calls, 1.448 ms each, 2.95 tokens each | draft decode 3660 calls, 2.665 ms each | draft sampling 3660 calls, 0.029 ms each
+mtp3 spc_timing: catch-up decode 2656 calls, 1.644 ms each, 5.29 tokens each | draft decode 7845 calls, 2.303 ms each | draft sampling 7845 calls, 0.025 ms each
+mtp2 spc_timing: catch-up decode 2944 calls, 1.649 ms each, 4.18 tokens each | draft decode 5802 calls, 2.412 ms each | draft sampling 5802 calls, 0.025 ms each
+mtp2+ngram-mod spc_timing: catch-up decode 2007 calls, 2.039 ms each, 6.34 tokens each | draft decode 3802 calls, 2.417 ms each | draft sampling 3802 calls, 0.027 ms each
+
+-- trunk time per call (llama-bench -n 0 -p N -r 12, median), re-packed file
+[(1, 25.5), (2, 28.3), (3, 30.4), (4, 31.5), (6, 45.9), (8, 55.1), (16, 265.9)]
+27 B | CUDA       |  99 |   1 |           pp512 |       840.96 ± 12.37
+27 B | CUDA       |  99 |   1 |           tg128 |         39.85 ± 0.17
+-- per prompt
+plain p01:  39.3 tok/s  accepted n/a
+plain p02:  38.9 tok/s  accepted n/a
+plain p03:  39.2 tok/s  accepted n/a
+plain p04:  39.4 tok/s  accepted n/a
+plain p05:  39.4 tok/s  accepted n/a
+plain p06:  39.5 tok/s  accepted n/a
+plain p07:  39.9 tok/s  accepted n/a
+plain p08:  39.5 tok/s  accepted n/a
+plain p09:  39.3 tok/s  accepted n/a
+plain p10:  39.4 tok/s  accepted n/a
+plain p11:  39.5 tok/s  accepted n/a
+plain p12:  39.4 tok/s  accepted n/a
+plain c01:   39.4 tok/s  n=632  accepted n/a
+plain c02:   39.3 tok/s  n=575  accepted n/a
+plain c03:   39.3 tok/s  n=464  accepted n/a
+plain c04:   39.4 tok/s  n=491  accepted n/a
+plain c05:   39.5 tok/s  n=340  accepted n/a
+plain c06:   39.5 tok/s  n=340  accepted n/a
+mtp1 p01:  52.3 tok/s  accepted 158/190
+mtp1 p02:  45.7 tok/s  accepted 91/151
+mtp1 p03:  53.5 tok/s  accepted 150/177
+mtp1 p04:  55.2 tok/s  accepted 163/186
+mtp1 p05:  47.6 tok/s  accepted 134/214
+mtp1 p06:  46.5 tok/s  accepted 129/219
+mtp1 p07:  54.8 tok/s  accepted 93/110
+mtp1 p08:  47.9 tok/s  accepted 118/183
+mtp1 p09:  56.6 tok/s  accepted 170/179
+mtp1 p10:  48.9 tok/s  accepted 84/126
+mtp1 p11:  52.1 tok/s  accepted 153/196
+mtp1 p12:  49.6 tok/s  accepted 143/205
+mtp1 c01:   53.0 tok/s  n=632  accepted 296/336
+mtp1 c02:   54.0 tok/s  n=575  accepted 275/299
+mtp1 c03:   50.8 tok/s  n=464  accepted 206/257
+mtp1 c04:   50.8 tok/s  n=491  accepted 215/275
+mtp1 c05:   54.1 tok/s  n=340  accepted 161/179
+mtp1 c06:   54.0 tok/s  n=340  accepted 162/178
+mtp3 p01:  58.2 tok/s  accepted 219/389
+mtp3 p02:  44.2 tok/s  accepted 118/360
+mtp3 p03:  57.9 tok/s  accepted 201/375
+mtp3 p04:  60.3 tok/s  accepted 219/385
+mtp3 p05:  55.5 tok/s  accepted 205/428
+mtp3 p06:  48.1 tok/s  accepted 181/504
+mtp3 p07:  58.4 tok/s  accepted 125/234
+mtp3 p08:  45.4 tok/s  accepted 167/504
+mtp3 p09:  73.7 tok/s  accepted 243/317
+mtp3 p10:  53.9 tok/s  accepted 85/186
+mtp3 p11:  58.0 tok/s  accepted 210/414
+mtp3 p12:  51.4 tok/s  accepted 198/452
+mtp3 c01:   59.8 tok/s  n=632  accepted 394/711
+mtp3 c02:   59.4 tok/s  n=575  accepted 363/633
+mtp3 c03:   56.7 tok/s  n=464  accepted 283/540
+mtp3 c04:   56.1 tok/s  n=491  accepted 299/573
+mtp3 c05:   54.2 tok/s  n=340  accepted 202/411
+mtp3 c06:   52.5 tok/s  n=340  accepted 199/423
+mtp2 p01:  56.9 tok/s  accepted 204/288
+mtp2 p02:  47.0 tok/s  accepted 114/248
+mtp2 p03:  57.5 tok/s  accepted 188/276
+mtp2 p04:  59.0 tok/s  accepted 205/286
+mtp2 p05:  54.1 tok/s  accepted 189/318
+mtp2 p06:  46.5 tok/s  accepted 165/365
+mtp2 p07:  58.4 tok/s  accepted 117/172
+mtp2 p08:  47.4 tok/s  accepted 154/332
+mtp2 p09:  66.2 tok/s  accepted 221/256
+mtp2 p10:  48.2 tok/s  accepted 99/214
+mtp2 p11:  56.3 tok/s  accepted 196/304
+mtp2 p12:  51.6 tok/s  accepted 182/334
+mtp2 c01:   58.8 tok/s  n=632  accepted 369/526
+mtp2 c02:   60.2 tok/s  n=575  accepted 343/462
+mtp2 c03:   55.7 tok/s  n=464  accepted 260/408
+mtp2 c04:   56.1 tok/s  n=491  accepted 274/434
+mtp2 c05:   57.9 tok/s  n=340  accepted 196/286
+mtp2 c06:   58.0 tok/s  n=340  accepted 193/292
+mtp2+ngram-mod p01:  57.5 tok/s  accepted 204/288
+mtp2+ngram-mod p02:  47.0 tok/s  accepted 114/248
+mtp2+ngram-mod p03:  58.9 tok/s  accepted 188/276
+mtp2+ngram-mod p04:  59.8 tok/s  accepted 205/286
+mtp2+ngram-mod p05:  54.0 tok/s  accepted 189/318
+mtp2+ngram-mod p06:  46.6 tok/s  accepted 165/365
+mtp2+ngram-mod p07:  57.8 tok/s  accepted 117/172
+mtp2+ngram-mod p08:  47.2 tok/s  accepted 154/332
+mtp2+ngram-mod p09:  65.7 tok/s  accepted 221/256
+mtp2+ngram-mod p10:  46.9 tok/s  accepted 99/214
+mtp2+ngram-mod p11:  55.4 tok/s  accepted 196/304
+mtp2+ngram-mod p12:  51.2 tok/s  accepted 182/334
+mtp2+ngram-mod c01:   76.7 tok/s  n=632  accepted 534/686
+mtp2+ngram-mod c02:   85.6 tok/s  n=575  accepted 533/696
+mtp2+ngram-mod c03:   83.2 tok/s  n=464  accepted 423/572
+mtp2+ngram-mod c04:   85.8 tok/s  n=491  accepted 451/570
+mtp2+ngram-mod c05:   70.8 tok/s  n=340  accepted 301/444
+mtp2+ngram-mod c06:  125.6 tok/s  n=340  accepted 333/384
+ngram-mod p01:  38.3 tok/s  accepted n/a
+ngram-mod p02:  38.1 tok/s  accepted n/a
+ngram-mod p03:  38.4 tok/s  accepted n/a
+ngram-mod p04:  38.8 tok/s  accepted n/a
+ngram-mod p05:  38.3 tok/s  accepted 31/54
+ngram-mod p06:  38.5 tok/s  accepted n/a
+ngram-mod p07:  38.6 tok/s  accepted n/a
+ngram-mod p08:  38.7 tok/s  accepted n/a
+ngram-mod p09:  38.5 tok/s  accepted n/a
+ngram-mod p10:  38.6 tok/s  accepted n/a
+ngram-mod p11:  38.8 tok/s  accepted n/a
+ngram-mod p12:  38.6 tok/s  accepted n/a
+ngram-mod c01:   62.4 tok/s  n=632  accepted 404/576
+ngram-mod c02:   82.0 tok/s  n=575  accepted 489/640
+ngram-mod c03:   79.8 tok/s  n=464  accepted 385/512
+ngram-mod c04:   82.1 tok/s  n=491  accepted 413/512
+ngram-mod c05:   64.5 tok/s  n=340  accepted 260/384
+ngram-mod c06:  131.6 tok/s  n=340  accepted 333/384

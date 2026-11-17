@@ -10,11 +10,41 @@ index 39f802d..d965bfb 100644
      add_subdirectory(eval-callback)
  
      add_subdirectory(gguf-hash)
+diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
+index 2ac5220..e109a41 100644
+--- a/src/llama-graph.cpp
++++ b/src/llama-graph.cpp
+@@ -1681,6 +1681,9 @@ ggml_tensor * llm_graph_context::build_ttf_mm(
+     if (l.m) {
+         cur = ggml_add(ctx0, cur, l.m);
+     }
++    if (w->ne[0] > cur->ne[0]) { // a K-padded up layer of an adapter (TQ1_P): zero-pad its input
++        cur = ggml_pad(ctx0, cur, w->ne[0] - cur->ne[0], 0, 0, 0);
++    }
+     ggml_tensor * res = ggml_mul_mat(ctx0, w, cur);
+     if (l.r) {
+         res = ggml_mul(ctx0, res, l.r);
 diff --git a/src/llama-model.cpp b/src/llama-model.cpp
-index 82342d8..a0052ee 100644
+index 82342d8..bbf3ec2 100644
 --- a/src/llama-model.cpp
 +++ b/src/llama-model.cpp
-@@ -2076,6 +2076,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
+@@ -2026,6 +2026,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
+                 te.dl.c = ttf_vec(e, "ttf_d_c", bid, K);
+                 te.dl.m = ttf_vec(e, "ttf_d_m", bid, K);
+                 te.dl.b = ttf_vec(e, "ttf_d_b", bid, r);
++                te.dl.r = ttf_vec(e, "ttf_d_r", bid, r); // row scale of a TQ1_P down layer
+                 te.u = ttf_mat(e, "ttf_u", bid, r, N);
+                 if (!te.u) {
+                     throw std::runtime_error(format("TTF adapter %s has a down layer but no up layer", tn(e, "ttf_d", bid).str().c_str()));
+@@ -2033,6 +2034,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
+                 te.ul.c = ttf_vec(e, "ttf_u_c", bid, r);
+                 te.ul.m = ttf_vec(e, "ttf_u_m", bid, r);
+                 te.ul.b = ttf_vec(e, "ttf_u_b", bid, N);
++                te.ul.r = ttf_vec(e, "ttf_u_r", bid, N); // row scale of a TQ1_P up layer
+             }
+             te.fd = ttf_mat(e, "ttf_fd", bid, K, -1);
+             if (te.fd) {
+@@ -2076,6 +2078,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
                  ttf_load(LLM_TENSOR_FFN_GATE_EXPS,    layer.ffn_gate_exps,    i);
                  ttf_load(LLM_TENSOR_FFN_UP_EXPS,      layer.ffn_up_exps,      i);
                  ttf_load(LLM_TENSOR_FFN_DOWN_EXPS,    layer.ffn_down_exps,    i);
