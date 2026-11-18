@@ -18,6 +18,9 @@ from mtp_head import load_trunk_io, is_held_out
 
 D, NAUX, NH, NKV, HD, FF, RANK = 5120, 5, 32, 8, 128, 17408, 256
 MASK_ID, EPS, TOPK = 248070, 1e-6, 32
+# layers held per position in the feature dump, and which of them (columns) the drafter reads; None = all
+AUXCFG = {"n": NAUX, "cols": None}
+STOCK_IDS = [6, 20, 34, 48, 62]   # engine ids (layer inputs) of the stock drafter's five trunk layers
 ROPE_BASE, YARN_FACTOR, YARN_ORIG, BETA_FAST, BETA_SLOW = 1e7, 32.0, 8192, 32.0, 1.0
 MATS = ("self_attn.q_proj", "self_attn.k_proj", "self_attn.v_proj", "self_attn.o_proj", "mlp.gate_proj", "mlp.up_proj", "mlp.down_proj")
 GG = {"self_attn.q_proj": "attn_q", "self_attn.k_proj": "attn_k", "self_attn.v_proj": "attn_v", "self_attn.o_proj": "attn_output",
@@ -64,20 +67,22 @@ def tq1_0(w):
 
 
 class DSpark(nn.Module):
-    def __init__(self, n_layers=5, tern=False, yarn=True, markov_row0=True):
+    def __init__(self, n_layers=5, tern=False, yarn=True, markov_row0=True, n_aux=NAUX, ff=FF):
         super().__init__()
+        self.ff = ff
+        self.cols, self.layer_ids = None, list(STOCK_IDS)
         self.n_layers, self.tern, self.markov_row0 = n_layers, tern, markov_row0
         self.inv, self.af = inv_freq(yarn)
         P = nn.ParameterDict
         shapes = {"self_attn.q_proj": (NH * HD, D), "self_attn.k_proj": (NKV * HD, D), "self_attn.v_proj": (NKV * HD, D),
-                  "self_attn.o_proj": (D, NH * HD), "mlp.gate_proj": (FF, D), "mlp.up_proj": (FF, D), "mlp.down_proj": (D, FF)}
+                  "self_attn.o_proj": (D, NH * HD), "mlp.gate_proj": (ff, D), "mlp.up_proj": (ff, D), "mlp.down_proj": (D, ff)}
         self.w = P()
         for i in range(n_layers):
             for m in MATS:
                 self.w[self.key(f"layers.{i}.{m}.weight")] = nn.Parameter(torch.zeros(shapes[m]))
             for m, n in (("input_layernorm", D), ("post_attention_layernorm", D), ("self_attn.q_norm", HD), ("self_attn.k_norm", HD)):
                 self.w[self.key(f"layers.{i}.{m}.weight")] = nn.Parameter(torch.ones(n))
-        for name, shape in (("fc.weight", (D, NAUX * D)), ("markov_head.markov_w1.weight", (248320, RANK)),
+        for name, shape in (("fc.weight", (D, n_aux * D)), ("markov_head.markov_w1.weight", (248320, RANK)),
                             ("markov_head.markov_w2.weight", (248320, RANK)), ("confidence_head.proj.weight", (1, D + RANK))):
             self.w[self.key(name)] = nn.Parameter(torch.zeros(shape))
         for name, n in (("hidden_norm.weight", D), ("norm.weight", D), ("confidence_head.proj.bias", 1)):
@@ -121,6 +126,8 @@ class DSpark(nn.Module):
                 if k == "__metadata__" or self.key(k) not in self.w:
                     continue
                 assert v["dtype"] == "BF16", v
+                if tuple(v["shape"]) != tuple(self.w[self.key(k)].shape):
+                    continue
                 f.seek(base + v["data_offsets"][0])
                 raw = np.frombuffer(f.read(v["data_offsets"][1] - v["data_offsets"][0]), dtype=np.int16)
                 t = torch.from_numpy(raw.copy()).view(torch.bfloat16).view(v["shape"]).float()
@@ -136,6 +143,21 @@ class DSpark(nn.Module):
                         p = torch.randn_like(p) * 1e-3 if self.tern else torch.zeros_like(p)
                     self.w[k.replace(f"layers/{self.n_layers - 1}/", f"layers/{i}/")] = nn.Parameter(p)
         self.n_layers = n_layers
+
+    def widen(self, ff):
+        """more feed-forward units per layer: new gate/up rows drawn at the scale of the existing ones, new down
+        columns near zero, so the function is unchanged at the start"""
+        assert ff > self.ff and ff % 256 == 0
+        with torch.no_grad():
+            for i in range(self.n_layers):
+                for m in ("gate_proj", "up_proj"):
+                    k = f"layers/{i}/mlp/{m}/weight"
+                    w = self.w[k].detach()
+                    self.w[k] = nn.Parameter(torch.cat([w, torch.randn(ff - self.ff, D, device=w.device) * w.std()]))
+                k = f"layers/{i}/mlp/down_proj/weight"
+                w = self.w[k].detach()
+                self.w[k] = nn.Parameter(torch.cat([w, torch.randn(D, ff - self.ff, device=w.device) * 1e-3 * w.std()], dim=1))
+        self.ff = ff
 
     def forward(self, aux, tok, anchors, B):
         """aux [T, 5*D] trunk features, tok [T], anchors [N] -> hidden [N, B, D] (post final norm), prev tokens [N, B]"""
@@ -183,7 +205,7 @@ class Dump:
         for idx in sorted(p for one in d.split(",") for p in glob.glob(os.path.join(one, "*.index.jsonl"))):
             base = idx[:-len(".index.jsonl")]
             sh = dict(tok=np.memmap(base + ".tok.i32", dtype=np.int32, mode="r"),
-                      aux=np.memmap(base + ".aux.f16", dtype=np.float16, mode="r").reshape(-1, NAUX * D),
+                      aux=np.memmap(base + ".aux.f16", dtype=np.float16, mode="r").reshape(-1, AUXCFG["n"] * D),
                       ti=np.memmap(base + ".topk.i32", dtype=np.int32, mode="r").reshape(-1, TOPK),
                       tp=np.memmap(base + ".topk.f16", dtype=np.float16, mode="r").reshape(-1, TOPK))
             for l in open(idx):
@@ -199,7 +221,10 @@ class Dump:
         off = max(0, L - max_len)
         sl = slice(s + off, s + L)
         tok = torch.from_numpy(np.asarray(sh["tok"][sl]).astype(np.int64)).to(device)
-        aux = torch.from_numpy(np.asarray(sh["aux"][sl])).to(device).to(torch.bfloat16)
+        aux = np.asarray(sh["aux"][sl])
+        if AUXCFG["cols"] is not None:
+            aux = np.ascontiguousarray(aux.reshape(len(aux), AUXCFG["n"], D)[:, AUXCFG["cols"]]).reshape(len(aux), -1)
+        aux = torch.from_numpy(aux).to(device).to(torch.bfloat16)
         ti = torch.from_numpy(np.asarray(sh["ti"][sl]).astype(np.int64)).to(device)
         tp = torch.from_numpy(np.asarray(sh["tp"][sl])).to(device).float()
         return tok, aux, ti, tp, max(npr - off, 1)
@@ -300,11 +325,20 @@ class AdamHalf:
 
 
 def build(a):
-    model = DSpark(n_layers=5, tern=False, yarn=not a.no_yarn, markov_row0=True)
-    if a.stock:
-        model.load_stock(a.stock)
+    ck = None
     if getattr(a, "init", None) or getattr(a, "ckpt", None):
         ck = torch.load(a.init if getattr(a, "init", None) else a.ckpt, map_location="cpu")
+    cols = ck.get("cols") if ck else None
+    AUXCFG["n"] = a.dump_layers
+    if cols is None and a.dump_layers == 10:
+        cols = [0, 2, 4, 6, 8]            # the stock five layers inside the ten-layer dump
+    AUXCFG["cols"] = cols
+    ck_ff = ck["sd"]["w.layers/0/mlp/gate_proj/weight"].shape[0] if ck else FF
+    model = DSpark(n_layers=5, tern=False, yarn=not a.no_yarn, markov_row0=True, n_aux=len(cols) if cols else NAUX, ff=ck_ff)
+    if a.stock:
+        model.load_stock(a.stock)
+    if ck:
+        model.cols, model.layer_ids = cols, ck.get("layer_ids", list(STOCK_IDS))
         if ck["n_layers"] > model.n_layers:
             model.grow(ck["n_layers"])
         model.tern = ck.get("tern", False)
@@ -314,6 +348,8 @@ def build(a):
         model.tern = True
     if n_layers > model.n_layers:
         model.grow(n_layers)
+    if getattr(a, "ff", 0) and a.ff > model.ff:
+        model.widen(a.ff)
     model = model.cuda()
     emb, model.out_w = load_trunk_io(a.trunk)
     model.tok_embd = emb.cpu()
@@ -388,14 +424,14 @@ def cmd_train(a):
         if step % a.eval_every == 0:
             r = evaluate(model, dump, held, B=a.block)
             print(f"step {step}", json.dumps(r), flush=True); log.write(json.dumps({"step": step, **r}) + "\n"); log.flush()
-            sd = {"sd": model.state_dict(), "n_layers": model.n_layers, "tern": model.tern, "step": step, "eval": r}
+            sd = {"sd": model.state_dict(), "n_layers": model.n_layers, "tern": model.tern, "step": step, "eval": r, "cols": model.cols, "layer_ids": model.layer_ids}
             torch.save(sd, os.path.join(a.out, "last.pt"))
             if r["accept7"] >= best:
                 best = r["accept7"]
                 os.replace(os.path.join(a.out, "last.pt"), os.path.join(a.out, "best.pt"))
     r = evaluate(model, dump, held, B=a.block)
     print(f"final step {step}", json.dumps(r), flush=True); log.write(json.dumps({"step": step, "final": True, **r}) + "\n")
-    torch.save({"sd": model.state_dict(), "n_layers": model.n_layers, "tern": model.tern, "step": step, "eval": r}, os.path.join(a.out, "last.pt"))
+    torch.save({"sd": model.state_dict(), "n_layers": model.n_layers, "tern": model.tern, "step": step, "eval": r, "cols": model.cols, "layer_ids": model.layer_ids}, os.path.join(a.out, "last.pt"))
     if r["accept7"] >= best:
         os.replace(os.path.join(a.out, "last.pt"), os.path.join(a.out, "best.pt"))
     print("TRAIN_DONE", flush=True)
@@ -404,7 +440,8 @@ def cmd_train(a):
 def cmd_export(a):
     import gguf
     ck = torch.load(a.ckpt, map_location="cpu")
-    model = DSpark(n_layers=5)
+    lids = ck.get("layer_ids", list(STOCK_IDS))
+    model = DSpark(n_layers=5, n_aux=len(lids), ff=ck["sd"]["w.layers/0/mlp/gate_proj/weight"].shape[0])
     if ck["n_layers"] > 5:
         model.grow(ck["n_layers"])
     model.tern = ck.get("tern", False)
@@ -422,6 +459,11 @@ def cmd_export(a):
             val = model.n_layers
         if field.name == f"{arch}.block_size" and a.block:
             val = a.block
+        if field.name == f"{arch}.feed_forward_length":
+            val = model.ff
+        if field.name == f"{arch}.target_layers":
+            print("target_layers", val, "->", lids)
+            val = lids
         writer.add_key_value(field.name, val, vt, sub_type=st)
     QT = gguf.GGMLQuantizationType
     name_of = {"fc.weight": "fc.weight", "hidden_norm.weight": "enc.output_norm.weight", "norm.weight": "output_norm.weight",
@@ -475,12 +517,12 @@ def main():
         p.add_argument("--stock", default="ttf-home/models/drafts/dspark-27b/hf/model.safetensors")
         p.add_argument("--trunk", default="out/trunk-tq1p.gguf")
         p.add_argument("--ckpt"); p.add_argument("--dump"); p.add_argument("--no-yarn", action="store_true")
-        p.add_argument("--block", type=int, default=16)
+        p.add_argument("--block", type=int, default=16); p.add_argument("--dump-layers", type=int, default=NAUX)
     p = sub.choices["eval"]
     p.add_argument("--held-only", action="store_true"); p.add_argument("--max-seqs", type=int, default=0); p.add_argument("--tern-io", default="")
     p = sub.choices["train"]
     p.add_argument("--out", required=True); p.add_argument("--init"); p.add_argument("--tern", action="store_true"); p.add_argument("--tern-io", default="")
-    p.add_argument("--layers", type=int, default=0); p.add_argument("--steps", type=int, default=1000000)
+    p.add_argument("--layers", type=int, default=0); p.add_argument("--ff", type=int, default=0); p.add_argument("--steps", type=int, default=1000000)
     p.add_argument("--hours", type=float, default=0.0); p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--wd", type=float, default=0.0); p.add_argument("--warmup", type=int, default=200)
     p.add_argument("--anchors", type=int, default=96); p.add_argument("--max-len", type=int, default=3072)
