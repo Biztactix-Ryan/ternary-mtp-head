@@ -102,6 +102,8 @@ class DSpark(nn.Module):
 
     @torch.no_grad()
     def prepare(self, grad=False):
+        if getattr(self, "frozen", False) and self._q:
+            return
         """Effective bf16 copy of every matrix (ternarised where the model is ternary). With grad=True the copies are
         leaves: their gradients, kept in bf16, are what the optimiser applies to the float weights."""
         self._q = {}
@@ -255,7 +257,7 @@ def block_stats(model, tok, aux, ti, tp, first, anchors, B, decay=None, chunk=51
             l.backward()
             loss += float(l)
         del lg
-    if decay:
+    if decay and out.requires_grad:
         out.backward(head.grad)
     hit = (hit & validf).view(N, B)
     return (loss if decay else None), hit, valid
@@ -293,6 +295,50 @@ def evaluate(model, dump, seqs, B=16, n_anchor=96, max_len=3072):
     rows = (hits / cnt.clamp(min=1)).tolist()
     return {"row": [round(x, 4) for x in rows], "accept7": acc[7][0] / max(acc[7][1], 1), "accept15": acc[15][0] / max(acc[15][1], 1),
             "blocks": acc[7][1]}
+
+
+class HeadTrainer:
+    """Trains the ternary output head with the drafter's layers frozen. The float latent stays on the GPU; the model
+    uses its TQ1_0 copy, whose gradient is applied to the latent (straight-through), row chunk by row chunk."""
+    def __init__(self, model, latent, lr, betas=(0.9, 0.99), eps=1e-8, chunk=16384):
+        self.model, self.lat, self.lr, self.b1, self.b2, self.eps, self.t, self.chunk = model, latent.float().cuda(), lr, betas[0], betas[1], eps, 0, chunk
+        self.m = torch.zeros_like(self.lat, dtype=torch.bfloat16)
+        self.v = torch.zeros_like(self.lat, dtype=torch.bfloat16)
+        model.out_w = torch.empty_like(self.lat, dtype=torch.bfloat16)
+        self.requant()
+        self.sign0 = model.out_w.sign().to(torch.int8)
+        print(f"head latent mean|w| {float(self.lat[:4096].abs().mean()):.5f}", flush=True)
+
+    @torch.no_grad()
+    def requant(self, lo=0, hi=None):
+        hi = self.lat.shape[0] if hi is None else hi
+        for i in range(lo, hi, self.chunk):
+            self.model.out_w[i:i + self.chunk] = tq1_0(self.lat[i:i + self.chunk]).to(torch.bfloat16)
+
+    @torch.no_grad()
+    def changed(self):
+        n = 0
+        for i in range(0, self.lat.shape[0], self.chunk):
+            n += int((self.model.out_w[i:i + self.chunk].sign().to(torch.int8) != self.sign0[i:i + self.chunk]).sum())
+        return n / self.lat.numel()
+
+    @torch.no_grad()
+    def step(self, lr, max_norm=1.0):
+        g = self.model.out_w.grad
+        self.t += 1
+        c = math.sqrt(1 - self.b2 ** self.t) / (1 - self.b1 ** self.t)
+        R = range(0, self.lat.shape[0], self.chunk)
+        tot = math.sqrt(sum(float(g[i:i + self.chunk].float().pow(2).sum()) for i in R))
+        sc = min(1.0, max_norm / (tot + 1e-6)) if math.isfinite(tot) else 0.0
+        for i in R:
+            sl = slice(i, i + self.chunk)
+            gr = g[sl] * sc
+            self.m[sl].mul_(self.b1).add_(gr, alpha=1 - self.b1)
+            self.v[sl].mul_(self.b2).addcmul_(gr, gr, value=1 - self.b2)
+            self.lat[sl].addcdiv_(self.m[sl].float(), self.v[sl].float().sqrt_().add_(self.eps), value=-lr * c)
+        self.model.out_w.grad = None
+        self.model.out_w.requires_grad_(False)
+        self.requant()
 
 
 class AdamHalf:
@@ -355,7 +401,12 @@ def build(a):
     model.tok_embd = emb.cpu()
     del emb
     tio = getattr(a, "tern_io", "") or ""
-    if tio in ("out", "both"):   # ternary (TQ1_0) output head; fixed, the layers train against it
+    if getattr(a, "head_pt", None):   # a trained ternary output head (already quantised)
+        model.out_w = None; torch.cuda.empty_cache(); model.out_w = torch.load(a.head_pt, map_location="cpu").cuda()
+    elif getattr(a, "train_head", False):
+        assert tio in ("out", "both")
+        model.head_latent = model.out_w.cpu(); model.out_w = None
+    elif tio in ("out", "both"):   # ternary (TQ1_0) output head; fixed, the layers train against it
         w = model.out_w.cpu(); model.out_w = None; torch.cuda.empty_cache(); model.out_w = tq1_0(w.float()).to(w.dtype).cuda()
     if tio in ("emb", "both"):   # ternary token embeddings
         model.tok_embd = tq1_0(model.tok_embd.float()).to(model.tok_embd.dtype)
@@ -381,6 +432,8 @@ def cmd_train(a):
     train = [e for e in dump.seqs if not is_held_out(e)]
     print(f"{len(train)} train / {len(held)} eval sequences; layers {model.n_layers}, ternary {model.tern}, "
           f"params {sum(p.numel() for p in model.parameters()) / 1e9:.2f}B", flush=True)
+    if a.train_head:
+        return train_head(a, model, dump, held, train)
     frozen = ("confidence_head",)
     mats = [p for k, p in model.w.items() if p.dim() == 2 and not k.startswith(frozen)]
     norms = [p for k, p in model.w.items() if p.dim() == 1 and not k.startswith(frozen)]
@@ -434,6 +487,52 @@ def cmd_train(a):
     torch.save({"sd": model.state_dict(), "n_layers": model.n_layers, "tern": model.tern, "step": step, "eval": r, "cols": model.cols, "layer_ids": model.layer_ids}, os.path.join(a.out, "last.pt"))
     if r["accept7"] >= best:
         os.replace(os.path.join(a.out, "last.pt"), os.path.join(a.out, "best.pt"))
+    print("TRAIN_DONE", flush=True)
+
+
+def train_head(a, model, dump, held, train):
+    for p in model.w.parameters():
+        p.requires_grad_(False)
+    model.prepare()
+    model.frozen = True
+    for p in model.w.values():           # the float latents of the frozen layers are not needed on the card
+        if p.dim() == 2:
+            p.data = p.data.cpu()
+    ht = HeadTrainer(model, model.head_latent, a.lr); del model.head_latent
+    torch.cuda.empty_cache()
+    gen = torch.Generator().manual_seed(0)
+    log = open(os.path.join(a.out, "log.jsonl"), "a")
+    r = evaluate(model, dump, held, B=a.block)
+    print("step 0", json.dumps(r), flush=True); log.write(json.dumps({"step": 0, **r}) + "\n"); log.flush()
+    best, t0, run, step = r["accept7"], time.time(), [0.0, 0.0, 0], 0
+    def check(tag):
+        nonlocal best
+        r = evaluate(model, dump, held, B=a.block)
+        r["changed"] = round(ht.changed(), 5)
+        print(f"{tag} {step}", json.dumps(r), flush=True); log.write(json.dumps({"step": step, **r}) + "\n"); log.flush()
+        if r["accept7"] >= best:
+            best = r["accept7"]
+            torch.save(model.out_w.detach().cpu(), os.path.join(a.out, "head-best.pt"))
+    while time.time() < t0 + a.hours * 3600:
+        e = train[int(torch.randint(len(train), (1,), generator=gen))]
+        tok, aux, ti, tp, first = dump.get(e, a.max_len)
+        an = pick_anchors(tok.numel(), first, a.anchors, gen)
+        if an is None:
+            continue
+        step += 1
+        frac = (time.time() - t0) / (a.hours * 3600)
+        lr = a.lr * min(1.0, step / a.warmup) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * min(frac, 1.0))))
+        model.out_w.requires_grad_(True)
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            loss, hit, valid = block_stats(model, tok, aux, ti, tp, first, an, a.block, decay=a.decay)
+        ht.step(lr)
+        run[0] += float(loss); run[1] += float(hit[:, 0].float().mean()); run[2] += 1
+        if step % a.log_every == 0:
+            print(f"step {step} loss {run[0] / run[2]:.4f} row0 {run[1] / run[2]:.3f} lr {lr:.2e} {(time.time() - t0) / step:.2f}s/step", flush=True)
+            run = [0.0, 0.0, 0]
+        if step % a.eval_every == 0:
+            check("step")
+    check("final step")
     print("TRAIN_DONE", flush=True)
 
 
@@ -494,7 +593,7 @@ def cmd_export(a):
             emb, out_w = load_trunk_io(a.io_from, "cpu")
             for nm, w in (("token_embd.weight", emb), ("output.weight", out_w)):
                 if nm in tern_names:
-                    q = tq1_0(w.float())
+                    q = torch.load(a.head_pt, map_location="cpu").float() if nm == "output.weight" and a.head_pt else tq1_0(w.float())
                     d16 = q.abs().view(q.shape[0], -1, 256).amax(-1).half().float().repeat_interleave(256, 1)
                     q = (q.sign() * d16).numpy().astype(np.float32)
                     data = gguf.quants.quantize(q, QT.TQ1_0)
@@ -516,13 +615,13 @@ def main():
         p = sub.add_parser(name)
         p.add_argument("--stock", default="ttf-home/models/drafts/dspark-27b/hf/model.safetensors")
         p.add_argument("--trunk", default="out/trunk-tq1p.gguf")
-        p.add_argument("--ckpt"); p.add_argument("--dump"); p.add_argument("--no-yarn", action="store_true")
+        p.add_argument("--ckpt"); p.add_argument("--dump"); p.add_argument("--head-pt"); p.add_argument("--no-yarn", action="store_true")
         p.add_argument("--block", type=int, default=16); p.add_argument("--dump-layers", type=int, default=NAUX)
     p = sub.choices["eval"]
     p.add_argument("--held-only", action="store_true"); p.add_argument("--max-seqs", type=int, default=0); p.add_argument("--tern-io", default="")
     p = sub.choices["train"]
     p.add_argument("--out", required=True); p.add_argument("--init"); p.add_argument("--tern", action="store_true"); p.add_argument("--tern-io", default="")
-    p.add_argument("--layers", type=int, default=0); p.add_argument("--ff", type=int, default=0); p.add_argument("--steps", type=int, default=1000000)
+    p.add_argument("--train-head", action="store_true"); p.add_argument("--layers", type=int, default=0); p.add_argument("--ff", type=int, default=0); p.add_argument("--steps", type=int, default=1000000)
     p.add_argument("--hours", type=float, default=0.0); p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--wd", type=float, default=0.0); p.add_argument("--warmup", type=int, default=200)
     p.add_argument("--anchors", type=int, default=96); p.add_argument("--max-len", type=int, default=3072)

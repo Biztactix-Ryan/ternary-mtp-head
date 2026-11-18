@@ -104,9 +104,9 @@ of four columns. `GGML_CUDA_TQ1P_COLS4=1` restores the old limit.
 - Output is bit-identical to the old path on 26 prompts of 5 to 8 tokens.
 - The aligned drafter at 7 drafts went from 50.1 to 58.1 tok/s (edits 103.0 to 123.5).
 
-## Follow-up: trunk layer sets and a wider drafter
+## Follow-up: trunk layer sets, a wider drafter, a trained output head
 
-Neither changes the result. Features moved to a disk pool for this round (steps about 0.9 s against 0.68 s),
+None of the three improves the result. Features moved to a disk pool for this round (steps about 0.9 s against 0.68 s),
 so runs get fewer steps than the ones above.
 
 **Which trunk layers the drafter reads.** A second dump holds ten layer inputs per position (6, 13, 20, 27,
@@ -139,6 +139,19 @@ new units start near zero so the function is unchanged).
 - With the sixth layer above, that is depth, width and layer choice all flat: the ternary drafter's 15%
   gap to float is not a capacity limit at this scale of data and training.
 
+**Training the output head itself.** The fully ternary drafter's layers are frozen and the ternary output head
+(1.27B weights, until now a fixed ternarised copy of the 4-bit model's head) is trained for 2 h with a
+straight-through estimator (`scripts/dspark.py train --train-head`, `scripts/dspark-head.sh`).
+
+| Learning rate | Trits changed | Start | After 500 steps | Final, 7-block | Final, 15-block |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1e-5 | 8.7% | 2.83 | 2.80 | 2.74 | 3.25 |
+| 5e-5 | 18.0% | 2.83 | 2.70 | 2.68 | 3.16 |
+
+- Held-out agreement falls from the first evaluation and keeps falling; the faster the head moves, the
+  worse. 2,288 training sequences are too few to train 1.27B head weights: it fits them and generalises
+  worse. The fixed head stays.
+
 ## Reproducing
 
 | Step | Script |
@@ -159,8 +172,7 @@ control. Training needs a whole 32 GB card.
 
 - **Short training.** Everything fits in one 8-hour window; the longest run is 4.4 hours.
 - **Same 24 prompts** as the earlier sections; acceptance on other workloads was not measured.
-- **Not tried:** training the output head itself rather than only the layers under it, more or different
-  training data, parallel slots.
+- **Not tried:** more or different training data, training head and layers together, parallel slots.
 - **The drafter depends on a full-precision-family output head** for its starting point. The alignment
   needs features from a model in the original basis.
 - **Licence:** the DSpark checkpoint's licence is listed as "other"; check it before distributing
